@@ -37,8 +37,10 @@ readonly THINGSDB=${DB:-$DEFAULT_DB}
 
 readonly ISNOTTRASHED="trashed = 0"
 readonly ISOPEN="status = 0"
-readonly ISACTIVE="start = 1"
-readonly ISNOTACTIVE="start = 2"
+readonly ISCOMPLETED="status = 3"
+readonly ISNOTSTARTED="start = 0"
+readonly ISSTARTED="start = 1"
+readonly ISPOSTPONED="start = 2"
 readonly ISTASK="type = 0"
 readonly ISPROJECT="type = 1"
 
@@ -69,9 +71,8 @@ inbox() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT title
 FROM TMTask
-WHERE $ISNOTTRASHED AND type=0
-AND start =0
-AND $ISOPEN;
+WHERE $ISNOTTRASHED AND $ISTASK
+AND $ISNOTSTARTED AND $ISOPEN;
 SQL
 }
 
@@ -80,8 +81,8 @@ today() {
 SELECT title
 FROM TMTask
 WHERE $ISNOTTRASHED AND $ISOPEN AND $ISTASK
-AND startdate is not null
-AND $ISACTIVE
+AND $ISSTARTED
+AND startdate is NOT NULL
 ORDER BY startdate, todayIndex;
 SQL
 }
@@ -91,7 +92,7 @@ upcoming() {
 SELECT title
 FROM TMTask
 WHERE $ISNOTTRASHED AND $ISOPEN AND $ISTASK
-AND $ISNOTACTIVE AND (startDate NOT NULL OR recurrenceRule NOT NULL)
+AND $ISPOSTPONED AND (startDate NOT NULL OR recurrenceRule NOT NULL)
 ORDER BY startdate, todayIndex;
 SQL
 }
@@ -105,11 +106,11 @@ next() {
 SELECT title
 FROM TMTask t
 WHERE $ISNOTTRASHED AND $ISTASK AND $ISOPEN
-AND $ISACTIVE
+AND $ISSTARTED
 AND (
   t.area NOT NULL
   OR
-  t.project in (SELECT uuid FROM TMTask WHERE uuid=t.project AND $ISACTIVE)
+  t.project in (SELECT uuid FROM TMTask WHERE uuid=t.project AND $ISSTARTED)
   )
 ORDER BY todayIndex;
 SQL
@@ -120,7 +121,7 @@ someday() {
 SELECT title
 FROM TMTask t
 WHERE $ISNOTTRASHED AND $ISTASK
-AND $ISNOTACTIVE
+AND $ISPOSTPONED
 AND $ISOPEN;
 SQL
 }
@@ -129,9 +130,8 @@ completed() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT title
 FROM TMTask
-WHERE $ISNOTTRASHED
-AND status = 3
-AND type=0;
+WHERE $ISNOTTRASHED AND $ISTASK
+AND $ISCOMPLETED;
 SQL
 }
 
@@ -140,7 +140,7 @@ nextish() {
 SELECT title
 FROM TMTask
 WHERE $ISNOTTRASHED
-AND $ISACTIVE
+AND $ISSTARTED
 AND $ISOPEN
 AND $ISTASK;
 SQL
@@ -158,7 +158,7 @@ old() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT date(creationDate,'unixepoch'), title
 FROM TMTask
-WHERE $ISNOTTRASHED AND $ISOPEN AND $ISACTIVE 
+WHERE $ISNOTTRASHED AND $ISOPEN AND $ISSTARTED 
 ORDER BY creationDate
 LIMIT 20;
 SQL
