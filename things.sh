@@ -21,16 +21,11 @@
 #
 # CREDITS
 #
-# Author: Arjan van der Gaag (script for Things 2)
-# Author: Alexander Willner (updates for Things 3, added many more commands)
-# Date: 2017-08-10
-# License: Whatever. Use at your own risk.
-#
-# DEBUG INFORMATION
-#
-# status: 0=open, 2=cancelled, 3=repeating or done
-# type: 0=normal, 2=heading
-
+# Author	: Arjan van der Gaag (script for Things 2)
+# Author	: Alexander Willner (updates for Things 3, added many more commands)
+# Date		: 2017-08-11
+# License	: Whatever. Use at your own risk.
+# Source	: https://gist.github.com/AlexanderWillner/dad8bb7cead74eb7679b553e8c37f477
 
 set -o errexit
 set -o nounset
@@ -39,6 +34,13 @@ readonly PROGNAME=$(basename $0)
 readonly ARGS="$@"
 readonly DEFAULT_DB=~/Library/Containers/com.culturedcode.ThingsMac/Data/Library/Application\ Support/Cultured\ Code/Things/Things.sqlite3
 readonly THINGSDB=${DB:-$DEFAULT_DB}
+
+readonly ISNOTTRASHED="trashed = 0"
+readonly ISOPEN="status = 0"
+readonly ISACTIVE="start = 1"
+readonly ISNOTACTIVE="start = 2"
+readonly ISTASK="type = 0"
+readonly ISPROJECT="type = 1"
 
 usage() {
   cat <<-EOF
@@ -50,12 +52,15 @@ FOCUS:
   inbox
   today
   upcoming
-  next (now called 'anytime')
+  next		(now called 'anytime')
   someday
   completed
-  nextAll (next actions also in someday projects)
-  all (just count all todos and projects)
-  stat (give an overview)
+  nextAll	(next actions also in someday projects)
+  all		(just count all todos and projects)
+  old	(show 20 todos ordered by creation date)
+  due		(show 20 todos ordered by due date)
+  projects	(show all projects ordered by creation date)
+  stat		(give an overview)
 EOF
 }
 
@@ -63,9 +68,9 @@ inbox() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT title
 FROM TMTask
-WHERE trashed = 0 AND type=0
+WHERE $ISNOTTRASHED AND type=0
 AND start =0
-AND status = 0;
+AND $ISOPEN;
 SQL
 }
 
@@ -73,10 +78,9 @@ today() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT title
 FROM TMTask
-WHERE trashed = 0 AND type=0
-AND status = 0
+WHERE $ISNOTTRASHED AND $ISOPEN AND $ISTASK
 AND startdate is not null
-AND start = 1
+AND $ISACTIVE
 ORDER BY startdate, todayIndex;
 SQL
 }
@@ -85,8 +89,8 @@ upcoming() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT title
 FROM TMTask
-WHERE trashed = 0 AND type=0
-AND status = 0 AND start = 2 AND startDate not null
+WHERE $ISNOTTRASHED AND $ISOPEN AND $ISTASK
+AND $ISNOTACTIVE AND (startDate NOT NULL OR recurrenceRule NOT NULL)
 ORDER BY startdate, todayIndex;
 SQL
 }
@@ -99,10 +103,13 @@ next() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT title
 FROM TMTask t
-WHERE trashed = 0 AND type=0
-AND start = 1
-AND status = 0
-AND t.project in (select uuid from TMTask where uuid=t.project and start=1)
+WHERE $ISNOTTRASHED AND $ISTASK AND $ISOPEN
+AND $ISACTIVE
+AND (
+  t.area NOT NULL
+  OR
+  t.project in (SELECT uuid FROM TMTask WHERE uuid=t.project AND $ISACTIVE)
+  )
 ORDER BY todayIndex;
 SQL
 }
@@ -111,20 +118,9 @@ someday() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT title
 FROM TMTask t
-WHERE trashed = 0 AND type=0
-AND start = 2
-AND status = 0;
-SQL
-}
-
-nextAll() {
-  sqlite3 "$THINGSDB" <<-SQL
-SELECT title
-FROM TMTask
-WHERE trashed = 0
-AND start = 1
-AND status = 0
-AND type=0;
+WHERE $ISNOTTRASHED AND $ISTASK
+AND $ISNOTACTIVE
+AND $ISOPEN;
 SQL
 }
 
@@ -132,9 +128,20 @@ completed() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT title
 FROM TMTask
-WHERE trashed = 0
+WHERE $ISNOTTRASHED
 AND status = 3
 AND type=0;
+SQL
+}
+
+nextAll() {
+  sqlite3 "$THINGSDB" <<-SQL
+SELECT title
+FROM TMTask
+WHERE $ISNOTTRASHED
+AND $ISACTIVE
+AND $ISOPEN
+AND $ISTASK;
 SQL
 }
 
@@ -142,12 +149,40 @@ all() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT title
 FROM TMTask
-WHERE trashed = 0
-AND status = 0
-AND type=0;
+WHERE $ISNOTTRASHED AND $ISOPEN AND $ISTASK;
 SQL
 }
 
+old() {
+  sqlite3 "$THINGSDB" <<-SQL
+SELECT date(creationDate,'unixepoch'), title
+FROM TMTask
+WHERE $ISNOTTRASHED AND $ISOPEN AND $ISACTIVE 
+ORDER BY creationDate
+LIMIT 20;
+SQL
+}
+
+due() {
+  sqlite3 "$THINGSDB" <<-SQL
+SELECT date(dueDate,'unixepoch'), title
+FROM TMTask
+WHERE $ISNOTTRASHED AND $ISOPEN
+AND dueDate NOT NULL
+ORDER BY dueDate
+LIMIT 20;
+SQL
+}
+
+projects() {
+  sqlite3 "$THINGSDB" <<-SQL
+SELECT title
+FROM TMTask
+WHERE $ISNOTTRASHED AND $ISOPEN
+AND $ISPROJECT
+ORDER BY creationDate;
+SQL
+}
 
 stat() {
 	echo -n "Inbox		:"; inbox|wc -l
@@ -160,7 +195,8 @@ stat() {
    	echo -n "Completed	:"; completed|wc -l
    	echo ""
     echo -n "All		:"; all|wc -l
-    echo -n "NextAll		:"; nextAll|wc -l	
+    echo -n "NextAll		:"; nextAll|wc -l
+    echo -n "Projects	:"; projects|wc -l	
 }
 
 require_sqlite3() {
@@ -190,6 +226,9 @@ main() {
     all) all;;
     nextAll) nextAll;;
 	completed) completed;;
+	old) old;;
+	due) due;;
+	projects) projects;;
 	stat) stat;;
     *)     usage;;
   esac
