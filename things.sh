@@ -44,22 +44,23 @@ readonly ISPROJECT="type = 1"
 
 usage() {
   cat <<-EOF
-usage: $PROGNAME [FOCUS]
+usage: $PROGNAME [COMMAND]
 
 List to do items from your Things database given a focus area.
 
-FOCUS:
+COMMAND:
   inbox
   today
   upcoming
-  next		(now called 'anytime')
+  next / anytime
   someday
   completed
-  nextAll	(next actions also in someday projects)
-  all		(just count all todos and projects)
-  old	(show 20 todos ordered by creation date)
+  all		(show all todos)
+  nextish	(show next todos that are also in someday projects)
+  old		(show 20 todos ordered by creation date)
   due		(show 20 todos ordered by due date)
   projects	(show all projects ordered by creation date)
+  csv		(show all todos as semicolon seperated values)
   stat		(give an overview)
 EOF
 }
@@ -134,7 +135,7 @@ AND type=0;
 SQL
 }
 
-nextAll() {
+nextish() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT title
 FROM TMTask
@@ -184,6 +185,28 @@ ORDER BY creationDate;
 SQL
 }
 
+csv() {
+# fix Excel import by running ```iconv -f UTF-8 -t WINDOWS-1252```
+echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";Project;Area'
+  sqlite3 "$THINGSDB" <<-SQL
+.mode csv
+.separator ";"
+SELECT 
+  T1.title, 
+  date(T1.creationDate,'unixepoch'),
+  date(T1.userModificationDate,'unixepoch'),
+  date(T1.dueDate,'unixepoch'),
+  date(T1.startDate,'unixepoch'),
+  T2.title,
+  T3.title
+FROM TMTask T1
+LEFT OUTER JOIN TMTask T2 ON T1.project = T2.uuid
+LEFT OUTER JOIN TMArea T3 ON T1.area = T3.uuid
+WHERE T1.trashed = 0 AND T1.status = 0 AND T1.type = 0;
+SQL
+}
+
+
 stat() {
 	echo -n "Inbox		:"; inbox|wc -l
 	echo ""
@@ -195,7 +218,7 @@ stat() {
    	echo -n "Completed	:"; completed|wc -l
    	echo ""
     echo -n "All		:"; all|wc -l
-    echo -n "NextAll		:"; nextAll|wc -l
+    echo -n "Nextish		:"; nextish|wc -l
     echo -n "Projects	:"; projects|wc -l	
 }
 
@@ -224,11 +247,12 @@ main() {
     anytime)  anytime;;
     someday)  someday;;
     all) all;;
-    nextAll) nextAll;;
+    nextish) nextish;;
 	completed) completed;;
 	old) old;;
 	due) due;;
 	projects) projects;;
+	csv) csv;;
 	stat) stat;;
     *)     usage;;
   esac
