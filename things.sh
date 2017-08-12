@@ -26,6 +26,28 @@
 # Date		: 2017-08-11
 # License	: Whatever. Use at your own risk.
 # Source	: https://gist.github.com/AlexanderWillner/dad8bb7cead74eb7679b553e8c37f477
+#
+# EXAMPLE OUTPUT
+#
+# $ things.sh stat
+# Inbox		: 3
+# 
+# Today		: 7
+# Upcoming	: 212
+# Next		: 32
+# Someday	: 1167
+# 
+# Completed	: 10973
+# 
+# Tasks		: 1333
+# Subtasks	: 34
+# Projects	: 98
+# Repeating	: 83
+# Nextish	: 166
+# 
+# Oldest   	: 2016-01-22
+# Farest   	: 2021-01-04
+# 
 
 set -o errexit
 set -o nounset
@@ -57,13 +79,15 @@ COMMAND:
   next / anytime
   someday
   completed
-  all		(show all todos)
-  nextish	(show next todos that are also in someday projects)
-  old		(show 20 todos ordered by creation date)
-  due		(show 20 todos ordered by due date)
+  all		(show all tasks)
+  nextish	(show next tasks that are also in someday projects)
+  old		(show 20 tasks ordered by creation date)
+  due		(show 20 tasks ordered by due date)
+  repeating	(show all repeating tasks)
+  subtasks	(show all subtasks)
   projects	(show all projects ordered by creation date)
-  csv		(show all todos as semicolon seperated values)
-  stat		(give an overview)
+  csv		(show all tasks as semicolon seperated values)
+  stat		(show an overview of the numbers of tasks)
 EOF
 }
 
@@ -154,6 +178,15 @@ WHERE $ISNOTTRASHED AND $ISOPEN AND $ISTASK;
 SQL
 }
 
+subtasks() {
+  sqlite3 "$THINGSDB" <<-SQL
+SELECT T1.title
+FROM TMChecklistItem T1
+LEFT OUTER JOIN TMTask T2 ON T1.task = T2.uuid
+WHERE T1.status=0 AND T2.status=0;
+SQL
+}
+
 old() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT date(creationDate,'unixepoch'), title
@@ -164,6 +197,30 @@ LIMIT 20;
 SQL
 }
 
+oldest() {
+  sqlite3 "$THINGSDB" <<-SQL
+.mode tabs
+SELECT date(creationDate,'unixepoch'), title
+FROM TMTask
+WHERE $ISNOTTRASHED AND $ISOPEN AND $ISSTARTED 
+ORDER BY creationDate
+LIMIT 1;
+SQL
+}
+
+future() {
+  sqlite3 "$THINGSDB" <<-SQL
+.mode tabs
+SELECT date(startDate,'unixepoch'), title
+FROM TMTask
+WHERE $ISNOTTRASHED AND $ISOPEN
+AND startDate NOT NULL
+ORDER BY startDate DESC
+LIMIT 1;
+SQL
+}
+
+
 due() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT date(dueDate,'unixepoch'), title
@@ -172,6 +229,16 @@ WHERE $ISNOTTRASHED AND $ISOPEN
 AND dueDate NOT NULL
 ORDER BY dueDate
 LIMIT 20;
+SQL
+}
+
+repeating() {
+  sqlite3 "$THINGSDB" <<-SQL
+SELECT title
+FROM TMTask
+WHERE $ISNOTTRASHED AND $ISOPEN AND $ISPOSTPONED
+AND recurrenceRule NOT NULL
+ORDER BY creationDate;
 SQL
 }
 
@@ -188,6 +255,7 @@ SQL
 csv() {
 # fix Excel import by running ```iconv -f UTF-8 -t WINDOWS-1252```
 echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";Project;Area'
+
   sqlite3 "$THINGSDB" <<-SQL
 .mode csv
 .separator ";"
@@ -204,6 +272,21 @@ LEFT OUTER JOIN TMTask T2 ON T1.project = T2.uuid
 LEFT OUTER JOIN TMArea T3 ON T1.area = T3.uuid
 WHERE T1.trashed = 0 AND T1.status = 0 AND T1.type = 0;
 SQL
+
+sqlite3 "$THINGSDB" <<-SQL
+.mode csv
+.separator ";"
+SELECT 
+  T1.title, 
+  date(T1.creationDate,'unixepoch'),
+  date(T1.userModificationDate,'unixepoch'),
+  ""
+  "",
+  T2.title
+FROM TMChecklistItem T1
+LEFT OUTER JOIN TMTask T2 ON T1.task = T2.uuid
+WHERE T1.status=0 AND T2.status=0;
+SQL
 }
 
 
@@ -217,9 +300,14 @@ stat() {
    	echo ""
    	echo -n "Completed	:"; completed|wc -l
    	echo ""
-    echo -n "All		:"; all|wc -l
-    echo -n "Nextish		:"; nextish|wc -l
+    echo -n "Tasks		:"; all|wc -l
+    echo -n "Subtasks	:"; subtasks|wc -l
     echo -n "Projects	:"; projects|wc -l	
+    echo -n "Repeating	:"; repeating|wc -l	
+    echo -n "Nextish		:"; nextish|wc -l
+    echo ""
+    echo -n "Oldest     	: "; oldest
+    echo -n "Farest     	: "; future
 }
 
 require_sqlite3() {
@@ -251,6 +339,8 @@ main() {
 	completed) completed;;
 	old) old;;
 	due) due;;
+	repeating) repeating;;
+	subtasks) subtasks;;
 	projects) projects;;
 	csv) csv;;
 	stat) stat;;
