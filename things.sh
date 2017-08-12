@@ -254,7 +254,7 @@ SQL
 
 csv() {
 # fix Excel import by running ```iconv -f UTF-8 -t WINDOWS-1252```
-echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";Project;Area'
+echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";Project;Area;Subtask'
 
   sqlite3 "$THINGSDB" <<-SQL
 .mode csv
@@ -266,7 +266,8 @@ SELECT
   date(T1.dueDate,'unixepoch'),
   date(T1.startDate,'unixepoch'),
   T2.title,
-  T3.title
+  T3.title,
+  ""
 FROM TMTask T1
 LEFT OUTER JOIN TMTask T2 ON T1.project = T2.uuid
 LEFT OUTER JOIN TMArea T3 ON T1.area = T3.uuid
@@ -277,12 +278,14 @@ sqlite3 "$THINGSDB" <<-SQL
 .mode csv
 .separator ";"
 SELECT 
-  T1.title, 
+  T2.title,
   date(T1.creationDate,'unixepoch'),
   date(T1.userModificationDate,'unixepoch'),
   ""
   "",
-  T2.title
+  "",
+  "",
+  T1.title
 FROM TMChecklistItem T1
 LEFT OUTER JOIN TMTask T2 ON T1.task = T2.uuid
 WHERE T1.status=0 AND T2.status=0;
