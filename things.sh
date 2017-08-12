@@ -23,7 +23,7 @@
 #
 # Author	: Arjan van der Gaag (script for Things 2)
 # Author	: Alexander Willner (updates for Things 3, added many more commands)
-# Date		: 2017-08-11
+# Date		: 2017-08-12
 # License	: Whatever. Use at your own risk.
 # Source	: https://gist.github.com/AlexanderWillner/dad8bb7cead74eb7679b553e8c37f477
 #
@@ -183,7 +183,7 @@ subtasks() {
 SELECT T1.title
 FROM TMChecklistItem T1
 LEFT OUTER JOIN TMTask T2 ON T1.task = T2.uuid
-WHERE T1.status=0 AND T2.status=0;
+WHERE T1.status=0 AND T2.status=0 AND T2.trashed=0;
 SQL
 }
 
@@ -285,10 +285,11 @@ SELECT
   "",
   "",
   "",
+  "",
   T1.title
 FROM TMChecklistItem T1
 LEFT OUTER JOIN TMTask T2 ON T1.task = T2.uuid
-WHERE T1.status=0 AND T2.status=0;
+WHERE T1.status=0 AND T2.status=0 AND T2.trashed=0;
 SQL
 }
 
