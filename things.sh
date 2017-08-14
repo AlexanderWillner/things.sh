@@ -25,29 +25,9 @@
 # Author	: Alexander Willner (updates for Things 3, added many more commands)
 # Date		: 2017-08-14
 # License	: Whatever. Use at your own risk.
-# Source	: https://gist.github.com/AlexanderWillner/dad8bb7cead74eb7679b553e8c37f477
+# Source	: https://github.com/AlexanderWillner/things.sh
 #
-# EXAMPLE OUTPUT
-#
-# $ things.sh stat
-# Inbox		: 3
-# 
-# Today		: 7
-# Upcoming	: 212
-# Next		: 32
-# Someday	: 1167
-# 
-# Completed	: 10973
-# 
-# Tasks		: 1333
-# Subtasks	: 34
-# Projects	: 98
-# Repeating	: 83
-# Nextish	: 166
-# 
-# Oldest   	: 2016-01-22
-# Farest   	: 2021-01-04
-# 
+
 
 set -o errexit
 set -o nounset
