@@ -18,8 +18,8 @@ curl -sL https://raw.githubusercontent.com/AlexanderWillner/things.sh/master/thi
 Note that you could override the location of the database used by setting the THINGSDB environment variable. For usage information, run the script with no arguments or with "help":
 
 ```
-$ things.sh help
-usage: things.sh [COMMAND]
+$ things.sh --limitBy 5 help
+usage: things.sh <OPTIONS> [COMMAND]
 
 List to do items from your Things database given a focus area.
 
@@ -33,15 +33,22 @@ COMMAND:
   cancelled
   trashed
   all		(show all tasks)
-  nextish	(show next tasks that are also in someday projects)
-  old		(show 20 tasks ordered by creation date)
-  due		(show 20 tasks ordered by due date)
-  repeating	(show all repeating tasks)
-  subtasks	(show all subtasks)
-  projects	(show all projects ordered by creation date)
-  headings	(show all headings ordered by creation date)
-  csv		(show all tasks as semicolon seperated values)
-  stat		(show an overview of the numbers of tasks)
+  nextish	(show 5 next tasks that are also in someday projects)
+  old		(show 5 tasks ordered by 'creationDate')
+  due		(show 5 tasks ordered by due date)
+  waiting	(show 5 tasks with the tag 'Waiting for' ordered by 'creationDate')
+  repeating	(show 5 repeating tasks orderd by 'creationDate')
+  subtasks	(show 5 subtasks)
+  projects	(show 5 projects ordered by creation date)
+  headings	(show 5 headings ordered by creation date)
+  csv		(export all tasks as semicolon seperated values)
+  stat		(provide an an overview of the numbers of tasks)
+  feedback	(provide feedback, request and propose changes)
+
+OPTIONS:
+  -l|--limitBy <number>		Limit output by <number> of results
+  -w|--waitingTag <tag>		Set waiting tag to <tag>
+  -o|--orderBy <column>		Sort output by <column> (e.g. 'userModificationDate' or 'creationDate')
 ```
 
 Example output:

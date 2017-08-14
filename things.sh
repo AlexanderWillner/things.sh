@@ -28,15 +28,16 @@
 # Source	: https://github.com/AlexanderWillner/things.sh
 #
 
-
 set -o errexit
 set -o nounset
 
+limitBy="20"
+waitingTag="Waiting for"
+orderBy="creationDate"
+
 readonly PROGNAME=$(basename $0)
-readonly ARGS="$@"
 readonly DEFAULT_DB=~/Library/Containers/com.culturedcode.ThingsMac/Data/Library/Application\ Support/Cultured\ Code/Things/Things.sqlite3
 readonly THINGSDB=${DB:-$DEFAULT_DB}
-readonly WAITINGTAG=${WAITINGTAG:-"Waiting for"}
 
 readonly TASKTABLE="TMTask"
 readonly AREATABLE="TMArea"
@@ -55,7 +56,7 @@ readonly ISHEADING="type = 2"
 
 usage() {
   cat <<-EOF
-usage: $PROGNAME [COMMAND]
+usage: $PROGNAME <OPTIONS> [COMMAND]
 
 List to do items from your Things database given a focus area.
 
@@ -69,17 +70,22 @@ COMMAND:
   cancelled
   trashed
   all		(show all tasks)
-  nextish	(show next tasks that are also in someday projects)
-  old		(show 20 tasks ordered by creation date)
-  due		(show 20 tasks ordered by due date)
-  waiting	(show all tasks with the tag '$WAITINGTAG' ordered by creation date)
-  repeating	(show all repeating tasks)
-  subtasks	(show all subtasks)
-  projects	(show all projects ordered by creation date)
-  headings	(show all headings ordered by creation date)
-  csv		(show all tasks as semicolon seperated values)
-  stat		(show an overview of the numbers of tasks)
+  nextish	(show $limitBy next tasks that are also in someday projects)
+  old		(show $limitBy tasks ordered by '$orderBy')
+  due		(show $limitBy tasks ordered by due date)
+  waiting	(show $limitBy tasks with the tag '$waitingTag' ordered by '$orderBy')
+  repeating	(show $limitBy repeating tasks orderd by '$orderBy')
+  subtasks	(show $limitBy subtasks)
+  projects	(show $limitBy projects ordered by creation date)
+  headings	(show $limitBy headings ordered by creation date)
+  csv		(export all tasks as semicolon seperated values)
+  stat		(provide an an overview of the numbers of tasks)
   feedback	(provide feedback, request and propose changes)
+
+OPTIONS:
+  -l|--limitBy <number>		Limit output by <number> of results
+  -w|--waitingTag <tag>		Set waiting tag to <tag>
+  -o|--orderBy <column>		Sort output by <column> (e.g. 'userModificationDate' or 'creationDate')
 EOF
 }
 
@@ -137,8 +143,7 @@ someday() {
 SELECT title
 FROM $TASKTABLE t
 WHERE $ISNOTTRASHED AND $ISTASK
-AND $ISPOSTPONED
-AND $ISOPEN;
+AND $ISPOSTPONED AND $ISOPEN;
 SQL
 }
 
@@ -155,10 +160,8 @@ nextish() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT title
 FROM $TASKTABLE
-WHERE $ISNOTTRASHED
-AND $ISSTARTED
-AND $ISOPEN
-AND $ISTASK;
+WHERE $ISNOTTRASHED AND $ISSTARTED AND $ISOPEN AND $ISTASK
+LIMIT $limitBy;
 SQL
 }
 
@@ -175,7 +178,8 @@ subtasks() {
 SELECT T1.title
 FROM TMChecklistItem T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.task = T2.uuid
-WHERE T1.status=0 AND T2.status=0 AND T2.trashed=0;
+WHERE T1.status=0 AND T2.status=0 AND T2.trashed=0
+LIMIT $limitBy;
 SQL
 }
 
@@ -185,8 +189,9 @@ SELECT T2.title
 FROM TMTaskTag T1
 LEFT JOIN $TASKTABLE T2 ON T1.tasks = T2.uuid
 WHERE $ISNOTTRASHED AND $ISOPEN
-AND T1.tags=(SELECT uuid FROM $TAGTABLE WHERE title='$WAITINGTAG')
-ORDER BY userModificationDate;
+AND T1.tags=(SELECT uuid FROM $TAGTABLE WHERE title='$waitingTag')
+ORDER BY $orderBy
+LIMIT $limitBy;
 SQL
 }
 
@@ -196,8 +201,8 @@ old() {
 SELECT date(creationDate,'unixepoch'), title
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISOPEN AND $ISSTARTED 
-ORDER BY creationDate
-LIMIT 20;
+ORDER BY $orderBy
+LIMIT $limitBy;
 SQL
 }
 
@@ -207,7 +212,7 @@ oldest() {
 SELECT date(creationDate,'unixepoch'), title
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISOPEN AND $ISSTARTED 
-ORDER BY creationDate
+ORDER BY $orderBy
 LIMIT 1;
 SQL
 }
@@ -232,7 +237,7 @@ FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISOPEN
 AND dueDate NOT NULL
 ORDER BY dueDate
-LIMIT 20;
+LIMIT $limitBy;
 SQL
 }
 
@@ -242,7 +247,8 @@ SELECT title
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISOPEN AND $ISPOSTPONED
 AND recurrenceRule NOT NULL
-ORDER BY creationDate;
+ORDER BY $orderBy
+LIMIT $limitBy;
 SQL
 }
 
@@ -252,7 +258,8 @@ SELECT title
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISOPEN
 AND $ISPROJECT
-ORDER BY creationDate;
+ORDER BY $orderBy
+LIMIT $limitBy;
 SQL
 }
 
@@ -262,7 +269,8 @@ SELECT title
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISOPEN
 AND $ISHEADING
-ORDER BY creationDate;
+ORDER BY $orderBy
+LIMIT $limitBy;
 SQL
 }
 
@@ -271,7 +279,7 @@ cancelled() {
 SELECT title
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISCANCELLED AND $ISTASK
-ORDER BY creationDate;
+ORDER BY $orderBy;
 SQL
 }
 
@@ -280,7 +288,7 @@ trashed() {
 SELECT title
 FROM $TASKTABLE
 WHERE $ISTRASHED AND $ISTASK
-ORDER BY creationDate;
+ORDER BY $orderBy;
 SQL
 }
 
@@ -374,10 +382,24 @@ require_db() {
   }
 }
 
-main() {
-  require_sqlite3
-  require_db
-  case $ARGS in
+require_sqlite3
+require_db
+
+while [[ $# -gt 1 ]]; do
+  key="$1"
+  case $key in
+    -l|--limitBy) limitBy="$2";shift;;
+    -w|--waitingTag) waitingTag="$2";shift;;
+    -o|--orderBy) orderBy="$2";shift;;
+  	*) ;;
+  esac
+  shift
+done
+
+command=${1:-}
+
+if [[ -n $command ]]; then
+  case $1 in
     inbox) inbox;;
     today) today;;
     upcoming) upcoming;;
@@ -397,10 +419,10 @@ main() {
 	trashed) trashed;;
 	waiting) waiting;;
 	csv) csv;;
-	stat) stat;;
+	stat) limitBy="999999" stat;;
 	feedback) open https://github.com/AlexanderWillner/things.sh/issues/;;
     *)     usage;;
   esac
-}
-
-main
+else
+	usage;
+fi
