@@ -72,7 +72,7 @@ COMMAND:
   nextish	(show next tasks that are also in someday projects)
   old		(show 20 tasks ordered by creation date)
   due		(show 20 tasks ordered by due date)
-  waiting	(show all tasks with the tag '$WAITINGTAG')
+  waiting	(show all tasks with the tag '$WAITINGTAG' ordered by creation date)
   repeating	(show all repeating tasks)
   subtasks	(show all subtasks)
   projects	(show all projects ordered by creation date)
@@ -185,7 +185,8 @@ SELECT T2.title
 FROM TMTaskTag T1
 LEFT JOIN $TASKTABLE T2 ON T1.tasks = T2.uuid
 WHERE $ISNOTTRASHED AND $ISOPEN
-AND T1.tags=(SELECT uuid FROM $TAGTABLE WHERE title='$WAITINGTAG');
+AND T1.tags=(SELECT uuid FROM $TAGTABLE WHERE title='$WAITINGTAG')
+ORDER BY userModificationDate;
 SQL
 }
 
