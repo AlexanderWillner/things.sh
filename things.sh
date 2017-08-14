@@ -79,6 +79,7 @@ COMMAND:
   headings	(show all headings ordered by creation date)
   csv		(show all tasks as semicolon seperated values)
   stat		(show an overview of the numbers of tasks)
+  feedback	(provide feedback, request and propose changes)
 EOF
 }
 
@@ -396,6 +397,7 @@ main() {
 	waiting) waiting;;
 	csv) csv;;
 	stat) stat;;
+	feedback) open https://github.com/AlexanderWillner/things.sh/issues/;;
     *)     usage;;
   esac
 }
