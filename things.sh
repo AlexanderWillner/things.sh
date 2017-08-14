@@ -36,9 +36,11 @@ readonly PROGNAME=$(basename $0)
 readonly ARGS="$@"
 readonly DEFAULT_DB=~/Library/Containers/com.culturedcode.ThingsMac/Data/Library/Application\ Support/Cultured\ Code/Things/Things.sqlite3
 readonly THINGSDB=${DB:-$DEFAULT_DB}
+readonly WAITINGTAG=${WAITINGTAG:-"Waiting for"}
 
 readonly TASKTABLE="TMTask"
 readonly AREATABLE="TMArea"
+readonly TAGTABLE="TMTag"
 readonly ISNOTTRASHED="trashed = 0"
 readonly ISTRASHED="trashed = 1"
 readonly ISOPEN="status = 0"
@@ -70,6 +72,7 @@ COMMAND:
   nextish	(show next tasks that are also in someday projects)
   old		(show 20 tasks ordered by creation date)
   due		(show 20 tasks ordered by due date)
+  waiting	(show all tasks with the tag '$WAITINGTAG')
   repeating	(show all repeating tasks)
   subtasks	(show all subtasks)
   projects	(show all projects ordered by creation date)
@@ -174,6 +177,17 @@ LEFT OUTER JOIN $TASKTABLE T2 ON T1.task = T2.uuid
 WHERE T1.status=0 AND T2.status=0 AND T2.trashed=0;
 SQL
 }
+
+waiting() {
+  sqlite3 "$THINGSDB" <<-SQL
+SELECT T2.title
+FROM TMTaskTag T1
+LEFT JOIN $TASKTABLE T2 ON T1.tasks = T2.uuid
+WHERE $ISNOTTRASHED AND $ISOPEN
+AND T1.tags=(SELECT uuid FROM $TAGTABLE WHERE title='$WAITINGTAG');
+SQL
+}
+
 
 old() {
   sqlite3 "$THINGSDB" <<-SQL
@@ -333,6 +347,7 @@ stat() {
    	echo ""
     echo -n "Tasks		:"; all|wc -l
     echo -n "Subtasks	:"; subtasks|wc -l
+    echo -n "Waiting		:"; waiting|wc -l
     echo -n "Projects	:"; projects|wc -l	
     echo -n "Repeating	:"; repeating|wc -l	
     echo -n "Nextish		:"; nextish|wc -l
@@ -378,6 +393,7 @@ main() {
 	headings) headings;;
 	cancelled) cancelled;;
 	trashed) trashed;;
+	waiting) waiting;;
 	csv) csv;;
 	stat) stat;;
     *)     usage;;
