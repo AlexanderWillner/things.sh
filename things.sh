@@ -111,7 +111,7 @@ SQL
 
 upcoming() {
   sqlite3 "$THINGSDB" <<-SQL
-SELECT title
+SELECT date(startDate,'unixepoch'), title
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISOPEN AND $ISTASK
 AND $ISPOSTPONED AND (startDate NOT NULL OR recurrenceRule NOT NULL)
@@ -203,29 +203,6 @@ FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISOPEN AND $ISSTARTED AND $ISTASK
 ORDER BY $orderBy
 LIMIT $limitBy;
-SQL
-}
-
-oldest() {
-  sqlite3 "$THINGSDB" <<-SQL
-.mode tabs
-SELECT date(creationDate,'unixepoch'), title
-FROM $TASKTABLE
-WHERE $ISNOTTRASHED AND $ISOPEN AND $ISSTARTED 
-ORDER BY $orderBy
-LIMIT 1;
-SQL
-}
-
-future() {
-  sqlite3 "$THINGSDB" <<-SQL
-.mode tabs
-SELECT date(startDate,'unixepoch'), title
-FROM $TASKTABLE
-WHERE $ISNOTTRASHED AND $ISOPEN
-AND startDate NOT NULL
-ORDER BY startDate DESC
-LIMIT 1;
 SQL
 }
 
@@ -363,8 +340,8 @@ stat() {
     echo -n "Nextish		:"; nextish|wc -l
     echo -n "Headings	:"; headings|wc -l
     echo ""
-    echo -n "Oldest     	: "; oldest
-    echo -n "Farest     	: "; future
+    echo -n "Oldest     	: "; limitBy="1" old
+    echo -n "Farest     	: "; orderBy="startDate DESC" upcoming|tail -n1
     echo -n "Days/Task	: "; averageCompleteTime
 }
 
