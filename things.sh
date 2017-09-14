@@ -79,13 +79,15 @@ COMMAND:
   projects	(show $limitBy projects ordered by creation date)
   headings	(show $limitBy headings ordered by creation date)
   csv		(export all tasks as semicolon seperated values)
-  stat		(provide an an overview of the numbers of tasks)
-  feedback	(provide feedback, request and propose changes)
+  stat		(provide an overview of the numbers of tasks)
+  search	(provide details about specific tasks)
+  feedback	(give feedback, request and propose changes)
 
 OPTIONS:
   -l|--limitBy <number>		Limit output by <number> of results
   -w|--waitingTag <tag>		Set waiting tag to <tag>
   -o|--orderBy <column>		Sort output by <column> (e.g. 'userModificationDate' or 'creationDate')
+  -s|--string <string>		String <string> to search for
 EOF
 }
 
@@ -345,6 +347,37 @@ stat() {
     echo -n "Days/Task	: "; averageCompleteTime
 }
 
+search() {
+  sqlite3 "$THINGSDB" <<-SQL
+.mode line
+SELECT 
+  T1.title as "Title", 
+  date(T1.creationDate,'unixepoch') as "Created",
+  date(T1.userModificationDate,'unixepoch') as "Modified",
+  date(T1.dueDate,'unixepoch') as "Due",
+  date(T1.startDate,'unixepoch') as "Start",
+  T2.title as "Project",
+  T3.title as "Area"
+FROM $TASKTABLE T1
+LEFT OUTER JOIN $TASKTABLE T2 ON T1.project = T2.uuid
+LEFT OUTER JOIN $AREATABLE T3 ON T1.area = T3.uuid
+WHERE T1.trashed = 0 AND T1.status = 0 AND T1.type = 0
+AND (T1.title LIKE "%$string%" OR T2.title LIKE "%$string%");
+SQL
+
+sqlite3 "$THINGSDB" <<-SQL
+.mode line
+SELECT 
+  T2.title as "Title",
+  date(T1.creationDate,'unixepoch') as "Created",
+  date(T1.userModificationDate,'unixepoch') as "Modified",
+  T1.title as "Task"
+FROM TMChecklistItem T1
+LEFT OUTER JOIN $TASKTABLE T2 ON T1.task = T2.uuid
+WHERE T1.status=0 AND T2.status=0 AND T2.trashed=0
+AND T1.title LIKE "%$string%";
+SQL
+}
 require_sqlite3() {
   command -v sqlite3 > /dev/null 2>&1 || {
     echo >&2 "ERROR: SQLite3 is required but could not be found."
@@ -368,6 +401,7 @@ while [[ $# -gt 1 ]]; do
     -l|--limitBy) limitBy="$2";shift;;
     -w|--waitingTag) waitingTag="$2";shift;;
     -o|--orderBy) orderBy="$2";shift;;
+    -s|--string) string="$2";shift;;
   	*) ;;
   esac
   shift
@@ -397,6 +431,7 @@ if [[ -n $command ]]; then
 	waiting) waiting;;
 	csv) csv;;
 	stat) limitBy="999999" stat;;
+	search) search;;
 	feedback) open https://github.com/AlexanderWillner/things.sh/issues/;;
     *)     usage;;
   esac
