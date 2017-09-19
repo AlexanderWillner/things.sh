@@ -356,12 +356,13 @@ SELECT
   date(T1.userModificationDate,'unixepoch') as "Modified",
   date(T1.dueDate,'unixepoch') as "Due",
   date(T1.startDate,'unixepoch') as "Start",
+  date(T1.stopDate,'unixepoch') as "Stopped",
   T2.title as "Project",
   T3.title as "Area"
 FROM $TASKTABLE T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.project = T2.uuid
 LEFT OUTER JOIN $AREATABLE T3 ON T1.area = T3.uuid
-WHERE T1.trashed = 0 AND T1.status = 0 AND T1.type = 0
+WHERE T1.trashed = 0 AND T1.type = 0
 AND (T1.title LIKE "%$string%" OR T2.title LIKE "%$string%");
 SQL
 
@@ -371,10 +372,11 @@ SELECT
   T2.title as "Title",
   date(T1.creationDate,'unixepoch') as "Created",
   date(T1.userModificationDate,'unixepoch') as "Modified",
+  date(T1.stopDate,'unixepoch') as "Stopped",
   T1.title as "Task"
 FROM TMChecklistItem T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.task = T2.uuid
-WHERE T1.status=0 AND T2.status=0 AND T2.trashed=0
+WHERE T2.trashed=0
 AND T1.title LIKE "%$string%";
 SQL
 }
