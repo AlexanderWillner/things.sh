@@ -78,6 +78,7 @@ COMMAND:
   subtasks	(show $limitBy subtasks)
   projects	(show $limitBy projects ordered by creation date)
   headings	(show $limitBy headings ordered by creation date)
+  notes		(show $limitBy notes as <headings>: <notes> ordered by creation date)
   csv		(export all tasks as semicolon seperated values)
   stat		(provide an overview of the numbers of tasks)
   search	(provide details about specific tasks)
@@ -280,9 +281,22 @@ AND $ISCOMPLETED;
 SQL
 }
 
+notes() {
+  sqlite3 "$THINGSDB" <<-SQL
+.mode list
+.separator ": "
+SELECT
+  title,
+  notes
+FROM $TASKTABLE
+WHERE $ISNOTTRASHED AND $ISOPEN
+ORDER BY $orderBy
+SQL
+}
+
 csv() {
 # fix Excel import by running ```iconv -f UTF-8 -t WINDOWS-1252```
-echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";Project;Area;Subtask'
+echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";Project;Area;Subtask;Notes'
 
   sqlite3 "$THINGSDB" <<-SQL
 .mode csv
@@ -295,7 +309,8 @@ SELECT
   date(T1.startDate,'unixepoch'),
   T2.title,
   T3.title,
-  ""
+  "",
+  T1.notes
 FROM $TASKTABLE T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.project = T2.uuid
 LEFT OUTER JOIN $AREATABLE T3 ON T1.area = T3.uuid
@@ -380,6 +395,7 @@ WHERE T2.trashed=0
 AND T1.title LIKE "%$string%";
 SQL
 }
+
 require_sqlite3() {
   command -v sqlite3 > /dev/null 2>&1 || {
     echo >&2 "ERROR: SQLite3 is required but could not be found."
@@ -431,6 +447,7 @@ if [[ -n $command ]]; then
 	cancelled) cancelled;;
 	trashed) trashed;;
 	waiting) waiting;;
+  	notes) notes;;
 	csv) csv;;
 	stat) limitBy="999999" stat;;
 	search) search;;
