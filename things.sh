@@ -298,7 +298,7 @@ csv() {
 # fix Excel import by running ```iconv -f UTF-8 -t WINDOWS-1252```
 echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";Project;Area;Subtask;Notes'
 
-  sqlite3 "$THINGSDB" <<-SQL
+sqlite3 "$THINGSDB" <<-SQL
 .mode csv
 .separator ";"
 SELECT 
@@ -310,7 +310,7 @@ SELECT
   T2.title,
   T3.title,
   "",
-  T1.notes
+  REPLACE(T1.notes, CHAR(10), ', ')
 FROM $TASKTABLE T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.project = T2.uuid
 LEFT OUTER JOIN $AREATABLE T3 ON T1.area = T3.uuid
