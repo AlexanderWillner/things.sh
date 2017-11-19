@@ -41,14 +41,17 @@ COMMAND:
   subtasks	(show 5 subtasks)
   projects	(show 5 projects ordered by creation date)
   headings	(show 5 headings ordered by creation date)
-  csv		(export all tasks as semicolon seperated values)
-  stat		(provide an an overview of the numbers of tasks)
-  feedback	(provide feedback, request and propose changes)
+  notes		(show 5 notes as <headings>: <notes> ordered by creation date)
+  csv		(export all tasks as semicolon seperated values incl. notes)
+  stat		(provide an overview of the numbers of tasks)
+  search	(provide details about specific tasks)
+  feedback	(give feedback, request and propose changes)
 
 OPTIONS:
   -l|--limitBy <number>		Limit output by <number> of results
   -w|--waitingTag <tag>		Set waiting tag to <tag>
   -o|--orderBy <column>		Sort output by <column> (e.g. 'userModificationDate' or 'creationDate')
+  -s|--string <string>		String <string> to search for
 ```
 
 Example output:
