@@ -79,7 +79,7 @@ COMMAND:
   projects	(show $limitBy projects ordered by creation date)
   headings	(show $limitBy headings ordered by creation date)
   notes		(show $limitBy notes as <headings>: <notes> ordered by creation date)
-  csv		(export all tasks as semicolon seperated values)
+  csv		(export all tasks as semicolon seperated values incl. notes)
   stat		(provide an overview of the numbers of tasks)
   search	(provide details about specific tasks)
   feedback	(give feedback, request and propose changes)
