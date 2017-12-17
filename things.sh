@@ -79,7 +79,7 @@ COMMAND:
   projects	(show $limitBy projects ordered by creation date)
   headings	(show $limitBy headings ordered by creation date)
   notes		(show $limitBy notes as <headings>: <notes> ordered by creation date)
-  csv		(export all tasks as semicolon seperated values incl. notes)
+  csv		(export all tasks as semicolon seperated values incl. notes and Excel friendly)
   stat		(provide an overview of the numbers of tasks)
   search	(provide details about specific tasks)
   feedback	(give feedback, request and propose changes)
@@ -295,7 +295,6 @@ SQL
 }
 
 csv() {
-# fix Excel import by running ```iconv -f UTF-8 -t WINDOWS-1252```
 echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";Project;Area;Subtask;Notes'
 
 sqlite3 "$THINGSDB" <<-SQL
@@ -448,7 +447,7 @@ if [[ -n $command ]]; then
 	trashed) trashed;;
 	waiting) waiting;;
   	notes) notes;;
-	csv) csv;;
+	csv) csv|awk '{gsub("<[^>]*>", "")}1'|iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT;;
 	stat) limitBy="999999" stat;;
 	search) search;;
 	feedback) open https://github.com/AlexanderWillner/things.sh/issues/;;
