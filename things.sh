@@ -362,6 +362,7 @@ stat() {
 }
 
 search() {
+  [ -z ${string:-} ] && echo "HINT: Use '-s' to set search string first" && exit 1
   sqlite3 "$THINGSDB" <<-SQL
 .mode line
 SELECT 
