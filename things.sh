@@ -135,9 +135,14 @@ AND $ISSTARTED
 AND (
   t.area NOT NULL
   OR
-  t.project in (SELECT uuid FROM $TASKTABLE WHERE uuid=t.project AND $ISSTARTED)
+  t.project in (SELECT uuid FROM $TASKTABLE WHERE uuid=t.project AND $ISSTARTED AND $ISNOTTRASHED)
   OR
-  t.actionGroup in (SELECT uuid FROM TMTask WHERE uuid=t.actionGroup AND start = 1)
+  t.actionGroup in 
+    (SELECT uuid FROM TMTask heading WHERE uuid=t.actionGroup 
+      AND $ISSTARTED 
+      AND $ISNOTTRASHED
+      AND heading.project in (SELECT uuid FROM TMTask WHERE uuid=heading.project AND $ISSTARTED AND $ISNOTTRASHED)
+    )
   )
 ORDER BY todayIndex;
 SQL
