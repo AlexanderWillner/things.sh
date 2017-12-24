@@ -23,7 +23,7 @@
 #
 # Author	: Arjan van der Gaag (script for Things 2)
 # Author	: Alexander Willner (updates for Things 3, added many more commands)
-# Date		: 2017-08-14
+# Date		: 2017-12-24
 # License	: Whatever. Use at your own risk.
 # Source	: https://github.com/AlexanderWillner/things.sh
 #
@@ -412,7 +412,8 @@ require_sqlite3() {
 
 require_db() {
   test -r "$THINGSDB" -a -f "$THINGSDB" || {
-  echo >&2 "ERROR: Things database not found at $THINGSDB."
+  echo >&2 "ERROR: Things database not found at '$THINGSDB'."
+  echo >&2 "HINT: You might need to install Things from https://culturedcode.com/things/"
   exit 2
   }
 }
