@@ -4,16 +4,11 @@
 
 Simple read-only comand-line interface to your Things 3 database. Since Things uses a SQLite database (which should come pre-installed on your Mac) we can simply query it straight from the command line. We only do read operations since we don't want to mess up your data.
 
+## Installation
+
+```brew install AlexanderWillner/tap/things.sh```
+
 ## Instructions
-
-To install, put this file somewhere in your ```$PATH``` and make it executable. E.g. by running: 
-
-```
-curl -sL https://raw.githubusercontent.com/AlexanderWillner/things.sh/master/things.sh \
-  -o /usr/local/bin/things.sh && \
-  chmod +x /usr/local/bin/things.sh
-```
-
 
 Note that you could override the location of the database used by setting the THINGSDB environment variable. For usage information, run the script with no arguments or with "help":
 
@@ -42,7 +37,7 @@ COMMAND:
   projects	(show 5 projects ordered by creation date)
   headings	(show 5 headings ordered by creation date)
   notes		(show 5 notes as <headings>: <notes> ordered by creation date)
-  csv		(export all tasks as semicolon seperated values incl. notes)
+  csv		(export all tasks as semicolon seperated values incl. notes and Excel friendly)
   stat		(provide an overview of the numbers of tasks)
   search	(provide details about specific tasks)
   feedback	(give feedback, request and propose changes)
@@ -84,7 +79,6 @@ Days/Task	: 39.0
 
 ## CREDITS
  * Author	: Arjan van der Gaag (script for Things 2)
- * Author	: Alexander Willner (updates for Things 3, added many more commands)
+ * Author	: Alexander Willner (updates for Things 3, added many more commands, a lot refactoring)
  * License	: Whatever. Use at your own risk.
  * https://github.com/AlexanderWillner/things.sh
-
