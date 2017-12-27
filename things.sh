@@ -28,11 +28,6 @@
 # Source	: https://github.com/AlexanderWillner/things.sh
 #
 
-set -o errexit
-set -o nounset
-set -eo pipefail
-[[ "${TRACE:-}" ]] && set -x
-
 limitBy="20"
 waitingTag="Waiting for"
 orderBy="creationDate"
@@ -430,6 +425,11 @@ require_db() {
 }
 
 main() {
+	set -o errexit
+	set -o nounset
+	set -eo pipefail
+	[[ "${TRACE:-}" ]] && set -x
+
 	require_sqlite3
 	require_db
 
@@ -479,4 +479,4 @@ main() {
 	fi
 }
 
-[[ "$0" == "$BASH_SOURCE" ]] && main "$@"
+[[ "${BASH_SOURCE[0]}" == "${0}" ]] && main "$@"

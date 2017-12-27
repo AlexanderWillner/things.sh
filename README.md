@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/AlexanderWillner/things.sh.svg?branch=master)](https://travis-ci.org/AlexanderWillner/things.sh)
+
 # Things 3 CLI
 
 ## Overview

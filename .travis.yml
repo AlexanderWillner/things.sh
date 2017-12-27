@@ -1,6 +1,6 @@
 language: bash
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y sqlite shunit2 shellcheck
+  - sudo apt-get install -y sqlite3 shunit2 shellcheck
 script:
  - make test
