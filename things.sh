@@ -128,23 +128,30 @@ anytime() {
 
 next() {
   sqlite3 "$THINGSDB" <<-SQL
-SELECT title
-FROM $TASKTABLE t
-WHERE $ISNOTTRASHED AND $ISTASK AND $ISOPEN
-AND $ISSTARTED
+SELECT
+  CASE 
+    WHEN AREA.title IS NOT NULL THEN AREA.title 
+    WHEN PROJECT.title IS NOT NULL THEN PROJECT.title
+    ELSE HEADING.title END,
+  TASK.title
+FROM $TASKTABLE TASK
+LEFT OUTER JOIN $TASKTABLE PROJECT ON TASK.project = PROJECT.uuid
+LEFT OUTER JOIN $AREATABLE AREA ON TASK.area = AREA.uuid
+LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
+WHERE TASK.trashed = 0 AND TASK.status = 0 AND TASK.type = 0 AND TASK.start = 1
 AND (
-  t.area NOT NULL
+  TASK.area NOT NULL
   OR
-  t.project in (SELECT uuid FROM $TASKTABLE WHERE uuid=t.project AND $ISSTARTED AND $ISNOTTRASHED)
+  TASK.project in (SELECT uuid FROM $TASKTABLE WHERE uuid=TASK.project AND $ISSTARTED AND $ISNOTTRASHED) 
   OR
-  t.actionGroup in 
-    (SELECT uuid FROM TMTask heading WHERE uuid=t.actionGroup 
+  TASK.actionGroup in 
+    (SELECT uuid FROM TMTask heading WHERE uuid=TASK.actionGroup 
       AND $ISSTARTED 
       AND $ISNOTTRASHED
       AND heading.project in (SELECT uuid FROM TMTask WHERE uuid=heading.project AND $ISSTARTED AND $ISNOTTRASHED)
     )
   )
-ORDER BY todayIndex;
+ORDER BY TASK.todayIndex;
 SQL
 }
 
