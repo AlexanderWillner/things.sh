@@ -2,9 +2,11 @@
 
 ## Overview
 
-Simple read-only comand-line interface to your Things 3 database. Since Things uses a SQLite database (which should come pre-installed on your Mac) we can simply query it straight from the command line. We only do read operations since we don't want to mess up your data.
+Simple read-only comand-line interface to your Things 3 database (incl. CSV export). Since Things uses a SQLite database (which should come pre-installed on your Mac) we can simply query it straight from the command line. We only do read operations since we don't want to mess up your data.
 
 ## Installation
+
+You can use [brew](https://brew.sh) to install and later update the script:
 
 ```brew install AlexanderWillner/tap/things.sh```
 
@@ -49,7 +51,13 @@ OPTIONS:
   -s|--string <string>		String <string> to search for
 ```
 
-Example output:
+## Examples 
+
+### CSV export and open with Excel
+
+```things.sh csv > Things3Export.csv ; open Things3Export.csv```
+
+### Statistics
 
 ```
 $ things.sh stat
@@ -75,6 +83,7 @@ Oldest     	: 2016-01-22
 Farest     	: 2021-01-04
 Days/Task	: 39.0
 ```
+
 
 
 ## CREDITS
