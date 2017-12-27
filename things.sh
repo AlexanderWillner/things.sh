@@ -309,7 +309,7 @@ SQL
 }
 
 csv() {
-echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";Project;Area;Subtask;Notes'
+echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";"Completion Date";Project;Area;Subtask;Notes'
 
 sqlite3 "$THINGSDB" <<-SQL
 .mode csv
@@ -320,6 +320,7 @@ SELECT
   date(T1.userModificationDate,'unixepoch'),
   date(T1.dueDate,'unixepoch'),
   date(T1.startDate,'unixepoch'),
+  date(T1.stopDate,'unixepoch'),
   T2.title,
   T3.title,
   "",
@@ -327,7 +328,7 @@ SELECT
 FROM $TASKTABLE T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.project = T2.uuid
 LEFT OUTER JOIN $AREATABLE T3 ON T1.area = T3.uuid
-WHERE T1.trashed = 0 AND T1.status = 0 AND T1.type = 0;
+WHERE T1.trashed = 0 AND (T1.status = 0 OR T1.status = 3) AND T1.type = 0;
 SQL
 
 sqlite3 "$THINGSDB" <<-SQL
@@ -337,15 +338,16 @@ SELECT
   T2.title,
   date(T1.creationDate,'unixepoch'),
   date(T1.userModificationDate,'unixepoch'),
-  ""
   "",
+  "",
+  date(T1.stopDate,'unixepoch'),
   "",
   "",
   "",
   T1.title
 FROM TMChecklistItem T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.task = T2.uuid
-WHERE T1.status=0 AND T2.status=0 AND T2.trashed=0;
+WHERE (T2.status = 0 OR T2.status = 3) AND T2.trashed=0;
 SQL
 }
 
