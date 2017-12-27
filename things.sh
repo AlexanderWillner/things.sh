@@ -35,9 +35,9 @@ limitBy="20"
 waitingTag="Waiting for"
 orderBy="creationDate"
 
-readonly PROGNAME=$(basename $0)
+readonly PROGNAME=$(basename "$0")
 readonly DEFAULT_DB=~/Library/Containers/com.culturedcode.ThingsMac/Data/Library/Application\ Support/Cultured\ Code/Things/Things.sqlite3
-readonly THINGSDB=${DB:-$DEFAULT_DB}
+readonly THINGSDB=${THINGSDB:-$DEFAULT_DB}
 
 readonly TASKTABLE="TMTask"
 readonly AREATABLE="TMArea"
@@ -378,7 +378,7 @@ stat() {
 }
 
 search() {
-  [ -z ${string:-} ] && echo "HINT: Use '-s' to set search string first" && exit 1
+  [ -z "${string:-}" ] && echo "HINT: Use '-s' to set search string first" && exit 1
   sqlite3 "$THINGSDB" <<-SQL
 .mode line
 SELECT 
