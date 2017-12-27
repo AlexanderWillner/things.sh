@@ -5,7 +5,7 @@ cli="THINGSDB=test/Things.sqlite3 ./things.sh -l 10 -w 'Waiting'"
 
 testToday() {
   command="today"
-  expectedString="Today"
+  expectedString="Today Project|Today Todo"
   output=$(eval "$cli" "$command")
   (echo $output|grep "$expectedString" 2>&1 > /dev/null); result=$?
   assertEquals "Command '$command' should contain '$expectedString'" 0 $result
@@ -29,7 +29,7 @@ testWaiting() {
 
 testStat() {
   command="stat"
-  expectedString="2017-12-27|Today Todo"
+  expectedString="2017-12-27|Today Project|Today Todo"
   output=$(eval "$cli" "$command")
   (echo $output|grep "$expectedString" 2>&1 > /dev/null); result=$?
   assertEquals "Command '$command' should contain '$expectedString'" 0 $result
@@ -42,4 +42,5 @@ testCSV() {
   (echo $output|grep "$expectedString" 2>&1 > /dev/null); result=$?
   assertEquals "Command '$command' should contain '$expectedString'" 0 $result
 }
+
 
