@@ -30,6 +30,8 @@
 
 set -o errexit
 set -o nounset
+set -eo pipefail
+[[ "${TRACE:-}" ]] && set -x
 
 limitBy="20"
 waitingTag="Waiting for"
@@ -378,7 +380,7 @@ stat() {
 }
 
 search() {
-  [ -z "${string:-}" ] && echo "HINT: Use '-s' to set search string first" && exit 1
+  [[ -z "${string:-}" ]] && echo "HINT: Use '-s' to set search string first" && exit 1
   sqlite3 "$THINGSDB" <<-SQL
 .mode line
 SELECT 
@@ -427,50 +429,54 @@ require_db() {
   }
 }
 
-require_sqlite3
-require_db
+main() {
+	require_sqlite3
+	require_db
 
-while [[ $# -gt 1 ]]; do
-  key="$1"
-  case $key in
-    -l|--limitBy) limitBy="$2";shift;;
-    -w|--waitingTag) waitingTag="$2";shift;;
-    -o|--orderBy) orderBy="$2";shift;;
-    -s|--string) string="$2";shift;;
-  	*) ;;
-  esac
-  shift
-done
+	while [[ $# -gt 1 ]]; do
+  	local key="$1"
+	  case $key in
+    	-l|--limitBy) limitBy="$2";shift;;
+	    -w|--waitingTag) waitingTag="$2";shift;;
+    	-o|--orderBy) orderBy="$2";shift;;
+	    -s|--string) string="$2";shift;;
+  		*) ;;
+	  esac
+	  shift
+	done
+	
+	local command=${1:-}
 
-command=${1:-}
+	if [[ -n $command ]]; then
+	  case $1 in
+    	inbox) inbox;;
+	    today) today;;
+    	upcoming) upcoming;;
+	    next) next;;
+    	anytime)  anytime;;
+	    someday)  someday;;
+    	all) all;;
+	    nextish) nextish;;
+		completed) completed;;
+		old) old;;
+		due) due;;
+		repeating) repeating;;
+		subtasks) subtasks;;
+		projects) projects;;
+		headings) headings;;
+		cancelled) cancelled;;
+		trashed) trashed;;
+		waiting) waiting;;
+  		notes) notes;;
+		csv) csv|awk '{gsub("<[^>]*>", "")}1'|iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT;;
+		stat) limitBy="999999" stat;;
+		search) search;;
+		feedback) open https://github.com/AlexanderWillner/things.sh/issues/;;
+	    *)     usage;;
+	  esac
+	else
+		usage;
+	fi
+}
 
-if [[ -n $command ]]; then
-  case $1 in
-    inbox) inbox;;
-    today) today;;
-    upcoming) upcoming;;
-    next)  next;;
-    anytime)  anytime;;
-    someday)  someday;;
-    all) all;;
-    nextish) nextish;;
-	completed) completed;;
-	old) old;;
-	due) due;;
-	repeating) repeating;;
-	subtasks) subtasks;;
-	projects) projects;;
-	headings) headings;;
-	cancelled) cancelled;;
-	trashed) trashed;;
-	waiting) waiting;;
-  	notes) notes;;
-	csv) csv|awk '{gsub("<[^>]*>", "")}1'|iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT;;
-	stat) limitBy="999999" stat;;
-	search) search;;
-	feedback) open https://github.com/AlexanderWillner/things.sh/issues/;;
-    *)     usage;;
-  esac
-else
-	usage;
-fi
+[[ "$0" == "$BASH_SOURCE" ]] && main "$@"
