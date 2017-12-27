@@ -4,7 +4,7 @@ help:
 	@echo " * feedback : create a GitHub issue"
 
 feedback:
-	open https://github.com/alexanderwillner/things.sh/issues
+	@open https://github.com/alexanderwillner/things.sh/issues
 
 test: check
 	@echo "Running shell checks..."
