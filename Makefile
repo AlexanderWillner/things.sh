@@ -10,8 +10,9 @@ test: check
 	@echo "Running shell checks..."
 	@shellcheck things.sh
 	@echo "Running unit tests..."
-	@shunit2 test/thingsTest.sh
+	@bashcov shunit2 test/thingsTest.sh
 
 check:
 	@type shellcheck >/dev/null 2>&1 || (echo "Run 'brew install shellcheck' first." >&2 ; exit 1)
 	@type shunit2 >/dev/null 2>&1 || (echo "Run 'brew install shunit2' first." >&2 ; exit 1)
+	@type bashcov >/dev/null 2>&1 || (echo "Run 'gem install bashcov' first." >&2 ; exit 1)

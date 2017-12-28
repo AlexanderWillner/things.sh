@@ -1,6 +1,7 @@
 language: bash
 sudo: false 
 dist: trusty
+install: gem install bashcov
 addons:
   apt:
     packages:
