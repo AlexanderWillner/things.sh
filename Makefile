@@ -11,6 +11,7 @@ test: check
 	@shellcheck things.sh
 	@echo "Running unit tests..."
 	@bashcov shunit2 test/thingsTest.sh
+	@cat coverage/index.html
 
 check:
 	@type shellcheck >/dev/null 2>&1 || (echo "Run 'brew install shellcheck' first." >&2 ; exit 1)
