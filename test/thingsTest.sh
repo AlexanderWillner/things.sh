@@ -22,9 +22,8 @@ testWaiting() {
 
 testStat() {
   command="stat"
-  output=$(eval "$CLI" "$command")
-  output=${output// /}
-  output=${output//	/}
+  output=$(eval "$CLI" "$command"|sed -e 's/[ 	]//g')
+
   expected="Inbox:1"
   (echo "$output"|grep "$expected" > /dev/null 2>&1); result=$?
   assertTrue "Command '$command' should contain '$expected' in '\n$output'" $result
