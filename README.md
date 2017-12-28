@@ -96,3 +96,4 @@ Days/Task : 39.0
  * https://google.github.io/styleguide/shell.xml
  * https://kvz.io/blog/2013/11/21/bash-best-practices/
  * https://github.com/progrium/bashstyle
+ * https://github.com/mvdan/sh/

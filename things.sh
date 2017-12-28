@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 
+#
 # DESCRIPTION
 #
 # Simple read-only comand-line interface to your Things 3 database. Since
@@ -292,7 +292,6 @@ LIMIT $limitBy;
 SQL
 }
 
-
 old() {
   sqlite3 "$THINGSDB" <<-SQL
 SELECT
@@ -313,7 +312,6 @@ ORDER BY TASK.$orderBy
 LIMIT $limitBy;
 SQL
 }
-
 
 due() {
   sqlite3 "$THINGSDB" <<-SQL
@@ -439,9 +437,9 @@ SQL
 }
 
 csv() {
-echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";"Completion Date";Project;Area;Subtask;Notes'
+  echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";"Completion Date";Project;Area;Subtask;Notes'
 
-sqlite3 "$THINGSDB" <<-SQL
+  sqlite3 "$THINGSDB" <<-SQL
 .mode csv
 .separator ";"
 SELECT 
@@ -461,7 +459,7 @@ LEFT OUTER JOIN $AREATABLE T3 ON T1.area = T3.uuid
 WHERE T1.$ISNOTTRASHED AND (T1.$ISOPEN OR T1.status = 3) AND T1.$ISTASK;
 SQL
 
-sqlite3 "$THINGSDB" <<-SQL
+  sqlite3 "$THINGSDB" <<-SQL
 .mode csv
 .separator ";"
 SELECT 
@@ -481,30 +479,47 @@ WHERE (T2.$ISOPEN OR T2.status = 3) AND T2.$ISNOTTRASHED;
 SQL
 }
 
-
 stat() {
-  echo -n "Inbox    :"; inbox|wc -l
+  echo -n "Inbox    :"
+  inbox | wc -l
   echo ""
-    echo -n "Today    :"; today|wc -l
-    echo -n "Upcoming  :"; upcoming|wc -l
-    echo -n "Next    :"; next|wc -l
-    echo -n "Someday    :"; someday|wc -l
-     echo ""
-     echo -n "Completed  :"; completed|wc -l
-    echo -n "Cancelled  :"; cancelled|wc -l
-    echo -n "Trashed    :"; trashed|wc -l
-     echo ""
-    echo -n "Tasks    :"; all|wc -l
-    echo -n "Subtasks  :"; subtasks|wc -l
-    echo -n "Waiting    :"; waiting|wc -l
-    echo -n "Projects  :"; projects|wc -l  
-    echo -n "Repeating  :"; repeating|wc -l  
-    echo -n "Nextish    :"; nextish|wc -l
-    echo -n "Headings  :"; headings|wc -l
-    echo ""
-    echo -n "Oldest       : "; limitBy="1" old
-    echo -n "Farest       : "; orderBy="startDate DESC" upcoming|tail -n1
-    echo -n "Days/Task  : "; averageCompleteTime
+  echo -n "Today    :"
+  today | wc -l
+  echo -n "Upcoming  :"
+  upcoming | wc -l
+  echo -n "Next    :"
+  next | wc -l
+  echo -n "Someday    :"
+  someday | wc -l
+  echo ""
+  echo -n "Completed  :"
+  completed | wc -l
+  echo -n "Cancelled  :"
+  cancelled | wc -l
+  echo -n "Trashed    :"
+  trashed | wc -l
+  echo ""
+  echo -n "Tasks    :"
+  all | wc -l
+  echo -n "Subtasks  :"
+  subtasks | wc -l
+  echo -n "Waiting    :"
+  waiting | wc -l
+  echo -n "Projects  :"
+  projects | wc -l
+  echo -n "Repeating  :"
+  repeating | wc -l
+  echo -n "Nextish    :"
+  nextish | wc -l
+  echo -n "Headings  :"
+  headings | wc -l
+  echo ""
+  echo -n "Oldest       : "
+  limitBy="1" old
+  echo -n "Farest       : "
+  orderBy="startDate DESC" upcoming | tail -n1
+  echo -n "Days/Task  : "
+  averageCompleteTime
 }
 
 search() {
@@ -527,7 +542,7 @@ WHERE T1.$ISNOTTRASHED AND T1.$ISTASK
 AND (T1.title LIKE "%$string%" OR T2.title LIKE "%$string%");
 SQL
 
-sqlite3 "$THINGSDB" <<-SQL
+  sqlite3 "$THINGSDB" <<-SQL
 .mode line
 SELECT 
   T2.title as "Title",
@@ -543,7 +558,7 @@ SQL
 }
 
 require_sqlite3() {
-  command -v sqlite3 > /dev/null 2>&1 || {
+  command -v sqlite3 >/dev/null 2>&1 || {
     echo >&2 "ERROR: SQLite3 is required but could not be found."
     exit 1
   }
@@ -551,9 +566,9 @@ require_sqlite3() {
 
 require_db() {
   test -r "$THINGSDB" -a -f "$THINGSDB" || {
-  echo >&2 "ERROR: Things database not found at '$THINGSDB'."
-  echo >&2 "HINT: You might need to install Things from https://culturedcode.com/things/"
-  exit 2
+    echo >&2 "ERROR: Things database not found at '$THINGSDB'."
+    echo >&2 "HINT: You might need to install Things from https://culturedcode.com/things/"
+    exit 2
   }
 }
 
@@ -564,52 +579,64 @@ main() {
   while [[ $# -gt 1 ]]; do
     local key="$1"
     case $key in
-      -l|--limitBy) limitBy="$2";shift;;
-      -w|--waitingTag) waitingTag="$2";shift;;
-      -o|--orderBy) orderBy="$2";shift;;
-      -s|--string) string="$2";shift;;
-      *) ;;
+    -l | --limitBy)
+      limitBy="$2"
+      shift
+      ;;
+    -w | --waitingTag)
+      waitingTag="$2"
+      shift
+      ;;
+    -o | --orderBy)
+      orderBy="$2"
+      shift
+      ;;
+    -s | --string)
+      string="$2"
+      shift
+      ;;
+    *) ;;
     esac
     shift
   done
-  
+
   local command=${1:-}
 
   if [[ -n $command ]]; then
     case $1 in
-      inbox) inbox;;
-      today) today;;
-      upcoming) upcoming;;
-      next) next;;
-      anytime)  anytime;;
-      someday)  someday;;
-      all) all;;
-      nextish) nextish;;
-    completed) completed;;
-    old) old;;
-    due) due;;
-    repeating) repeating;;
-    subtasks) subtasks;;
-    projects) projects;;
-    headings) headings;;
-    cancelled) cancelled;;
-    trashed) trashed;;
-    waiting) waiting;;
-      notes) notes;;
-    csv) csv|awk '{gsub("<[^>]*>", "")}1'|iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT;;
-    stat) limitBy="999999" stat;;
-    search) search;;
-    feedback) open https://github.com/AlexanderWillner/things.sh/issues/;;
-      *)     usage;;
+    inbox) inbox ;;
+    today) today ;;
+    upcoming) upcoming ;;
+    next) next ;;
+    anytime) anytime ;;
+    someday) someday ;;
+    all) all ;;
+    nextish) nextish ;;
+    completed) completed ;;
+    old) old ;;
+    due) due ;;
+    repeating) repeating ;;
+    subtasks) subtasks ;;
+    projects) projects ;;
+    headings) headings ;;
+    cancelled) cancelled ;;
+    trashed) trashed ;;
+    waiting) waiting ;;
+    notes) notes ;;
+    csv) csv | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT ;;
+    stat) limitBy="999999" stat ;;
+    search) search ;;
+    feedback) open https://github.com/AlexanderWillner/things.sh/issues/ ;;
+    *) usage ;;
     esac
   else
-    usage;
+    usage
   fi
 }
 
 cleanup() {
-    : # nothing to clean up
-    # echo "$(date) $(hostname) $0: EXIT on line $2 (exit status $1)"
+  : # nothing to clean up
+  # echo "$(date) $(hostname) $0: EXIT on line $2 (exit status $1)"
 }
 
 [[ "${BASH_SOURCE[0]}" == "${0}" ]] && trap 'cleanup $? $LINENO' EXIT && main "$@"
