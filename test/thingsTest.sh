@@ -96,7 +96,8 @@ testDue() {
 }
 
 runSimpleTest() {
-  declare command="$1" expectedString="$2"	
+  command="$1" 
+  expectedString="$2"	
   output=$(eval "$CLI" "$command")
   (echo "$output"|grep "$expectedString" > /dev/null 2>&1); result=$?
   assertEquals "Command '$command' should contain '$expectedString'" 0 $result
