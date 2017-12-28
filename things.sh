@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # 
 # DESCRIPTION
 #
@@ -27,6 +27,11 @@
 # License	: Whatever. Use at your own risk.
 # Source	: https://github.com/AlexanderWillner/things.sh
 #
+
+set -o errexit
+set -o nounset
+set -eo pipefail
+[[ "${TRACE:-}" ]] && set -x
 
 limitBy="20"
 waitingTag="Waiting for"
@@ -161,7 +166,7 @@ FROM $TASKTABLE TASK
 LEFT OUTER JOIN $TASKTABLE PROJECT ON TASK.project = PROJECT.uuid
 LEFT OUTER JOIN $AREATABLE AREA ON TASK.area = AREA.uuid
 LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
-WHERE TASK.trashed = 0 AND TASK.status = 0 AND TASK.type = 0 AND TASK.start = 1
+WHERE TASK.$ISNOTTRASHED AND TASK.$ISOPEN AND TASK.$ISTASK AND TASK.$ISSTARTED
 AND (
   TASK.area NOT NULL
   OR
@@ -255,10 +260,12 @@ SQL
 
 subtasks() {
   sqlite3 "$THINGSDB" <<-SQL
-SELECT T1.title
-FROM TMChecklistItem T1
-LEFT OUTER JOIN $TASKTABLE T2 ON T1.task = T2.uuid
-WHERE T1.status=0 AND T2.status=0 AND T2.trashed=0
+SELECT 
+  TASK.title,
+  CHECKLIST.title
+FROM TMChecklistItem CHECKLIST
+LEFT OUTER JOIN $TASKTABLE TASK ON CHECKLIST.task = TASK.uuid
+WHERE TASK.$ISOPEN AND TASK.$ISNOTTRASHED
 LIMIT $limitBy;
 SQL
 }
@@ -451,7 +458,7 @@ SELECT
 FROM $TASKTABLE T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.project = T2.uuid
 LEFT OUTER JOIN $AREATABLE T3 ON T1.area = T3.uuid
-WHERE T1.trashed = 0 AND (T1.status = 0 OR T1.status = 3) AND T1.type = 0;
+WHERE T1.$ISNOTTRASHED AND (T1.$ISOPEN OR T1.status = 3) AND T1.$ISTASK;
 SQL
 
 sqlite3 "$THINGSDB" <<-SQL
@@ -470,7 +477,7 @@ SELECT
   T1.title
 FROM TMChecklistItem T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.task = T2.uuid
-WHERE (T2.status = 0 OR T2.status = 3) AND T2.trashed=0;
+WHERE (T2.$ISOPEN OR T2.status = 3) AND T2.$ISNOTTRASHED;
 SQL
 }
 
@@ -516,7 +523,7 @@ SELECT
 FROM $TASKTABLE T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.project = T2.uuid
 LEFT OUTER JOIN $AREATABLE T3 ON T1.area = T3.uuid
-WHERE T1.trashed = 0 AND T1.type = 0
+WHERE T1.$ISNOTTRASHED AND T1.$ISTASK
 AND (T1.title LIKE "%$string%" OR T2.title LIKE "%$string%");
 SQL
 
@@ -530,7 +537,7 @@ SELECT
   T1.title as "Task"
 FROM TMChecklistItem T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.task = T2.uuid
-WHERE T2.trashed=0
+WHERE T2.$ISNOTTRASHED
 AND T1.title LIKE "%$string%";
 SQL
 }
@@ -551,11 +558,6 @@ require_db() {
 }
 
 main() {
-	set -o errexit
-	set -o nounset
-	set -eo pipefail
-	[[ "${TRACE:-}" ]] && set -x
-
 	require_sqlite3
 	require_db
 
