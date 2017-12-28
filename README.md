@@ -1,10 +1,10 @@
-[![Build Status](https://travis-ci.org/AlexanderWillner/things.sh.svg?branch=master)](https://travis-ci.org/AlexanderWillner/things.sh)
-
 # Things 3 CLI
 
 ## Overview
 
 Simple read-only comand-line interface to your Things 3 database (incl. CSV export). Since Things uses a SQLite database (which should come pre-installed on your Mac) we can simply query it straight from the command line. We only do read operations since we don't want to mess up your data.
+
+[![Build Status](https://travis-ci.org/AlexanderWillner/things.sh.svg?branch=master)](https://travis-ci.org/AlexanderWillner/things.sh)
 
 ## Installation
 
