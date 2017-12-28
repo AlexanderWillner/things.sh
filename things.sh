@@ -21,11 +21,11 @@
 #
 # CREDITS
 #
-# Author	: Arjan van der Gaag (script for Things 2)
-# Author	: Alexander Willner (updates for Things 3, added many more commands)
-# Date		: 2017-12-24
-# License	: Whatever. Use at your own risk.
-# Source	: https://github.com/AlexanderWillner/things.sh
+# Author  : Arjan van der Gaag (script for Things 2)
+# Author  : Alexander Willner (updates for Things 3, added many more commands)
+# Date    : 2017-12-24
+# License : Whatever. Use at your own risk.
+# Source  : https://github.com/AlexanderWillner/things.sh
 #
 
 set -o errexit
@@ -71,26 +71,26 @@ COMMAND:
   completed
   cancelled
   trashed
-  all		(show all tasks)
-  nextish	(show $limitBy next tasks that are also in someday projects)
-  old		(show $limitBy tasks ordered by '$orderBy')
-  due		(show $limitBy tasks ordered by due date)
-  waiting	(show $limitBy tasks with the tag '$waitingTag' ordered by '$orderBy')
-  repeating	(show $limitBy repeating tasks orderd by '$orderBy')
-  subtasks	(show $limitBy subtasks)
-  projects	(show $limitBy projects ordered by creation date)
-  headings	(show $limitBy headings ordered by creation date)
-  notes		(show $limitBy notes as <headings>: <notes> ordered by creation date)
-  csv		(export all tasks as semicolon seperated values incl. notes and Excel friendly)
-  stat		(provide an overview of the numbers of tasks)
-  search	(provide details about specific tasks)
-  feedback	(give feedback, request and propose changes)
+  all       (show all tasks)
+  nextish   (show $limitBy next tasks that are also in someday projects)
+  old       (show $limitBy tasks ordered by '$orderBy')
+  due       (show $limitBy tasks ordered by due date)
+  waiting   (show $limitBy tasks with the tag '$waitingTag' ordered by '$orderBy')
+  repeating (show $limitBy repeating tasks orderd by '$orderBy')
+  subtasks  (show $limitBy subtasks)
+  projects  (show $limitBy projects ordered by creation date)
+  headings  (show $limitBy headings ordered by creation date)
+  notes     (show $limitBy notes as <headings>: <notes> ordered by creation date)
+  csv       (export all tasks as semicolon seperated values incl. notes and Excel friendly)
+  stat      (provide an overview of the numbers of tasks)
+  search    (provide details about specific tasks)
+  feedback  (give feedback, request and propose changes)
 
 OPTIONS:
-  -l|--limitBy <number>		Limit output by <number> of results
-  -w|--waitingTag <tag>		Set waiting tag to <tag>
-  -o|--orderBy <column>		Sort output by <column> (e.g. 'userModificationDate' or 'creationDate')
-  -s|--string <string>		String <string> to search for
+  -l|--limitBy <number>    Limit output by <number> of results
+  -w|--waitingTag <tag>    Set waiting tag to <tag>
+  -o|--orderBy <column>    Sort output by <column> (e.g. 'userModificationDate' or 'creationDate')
+  -s|--string <string>     String <string> to search for
 EOF
 }
 
@@ -483,28 +483,28 @@ SQL
 
 
 stat() {
-	echo -n "Inbox		:"; inbox|wc -l
-	echo ""
-    echo -n "Today		:"; today|wc -l
-    echo -n "Upcoming	:"; upcoming|wc -l
-    echo -n "Next		:"; next|wc -l
-    echo -n "Someday		:"; someday|wc -l
-   	echo ""
-   	echo -n "Completed	:"; completed|wc -l
-    echo -n "Cancelled	:"; cancelled|wc -l
-    echo -n "Trashed		:"; trashed|wc -l
-   	echo ""
-    echo -n "Tasks		:"; all|wc -l
-    echo -n "Subtasks	:"; subtasks|wc -l
-    echo -n "Waiting		:"; waiting|wc -l
-    echo -n "Projects	:"; projects|wc -l	
-    echo -n "Repeating	:"; repeating|wc -l	
-    echo -n "Nextish		:"; nextish|wc -l
-    echo -n "Headings	:"; headings|wc -l
+  echo -n "Inbox    :"; inbox|wc -l
+  echo ""
+    echo -n "Today    :"; today|wc -l
+    echo -n "Upcoming  :"; upcoming|wc -l
+    echo -n "Next    :"; next|wc -l
+    echo -n "Someday    :"; someday|wc -l
+     echo ""
+     echo -n "Completed  :"; completed|wc -l
+    echo -n "Cancelled  :"; cancelled|wc -l
+    echo -n "Trashed    :"; trashed|wc -l
+     echo ""
+    echo -n "Tasks    :"; all|wc -l
+    echo -n "Subtasks  :"; subtasks|wc -l
+    echo -n "Waiting    :"; waiting|wc -l
+    echo -n "Projects  :"; projects|wc -l  
+    echo -n "Repeating  :"; repeating|wc -l  
+    echo -n "Nextish    :"; nextish|wc -l
+    echo -n "Headings  :"; headings|wc -l
     echo ""
-    echo -n "Oldest     	: "; limitBy="1" old
-    echo -n "Farest     	: "; orderBy="startDate DESC" upcoming|tail -n1
-    echo -n "Days/Task	: "; averageCompleteTime
+    echo -n "Oldest       : "; limitBy="1" old
+    echo -n "Farest       : "; orderBy="startDate DESC" upcoming|tail -n1
+    echo -n "Days/Task  : "; averageCompleteTime
 }
 
 search() {
@@ -558,53 +558,58 @@ require_db() {
 }
 
 main() {
-	require_sqlite3
-	require_db
+  require_sqlite3
+  require_db
 
-	while [[ $# -gt 1 ]]; do
-  	local key="$1"
-	  case $key in
-    	-l|--limitBy) limitBy="$2";shift;;
-	    -w|--waitingTag) waitingTag="$2";shift;;
-    	-o|--orderBy) orderBy="$2";shift;;
-	    -s|--string) string="$2";shift;;
-  		*) ;;
-	  esac
-	  shift
-	done
-	
-	local command=${1:-}
+  while [[ $# -gt 1 ]]; do
+    local key="$1"
+    case $key in
+      -l|--limitBy) limitBy="$2";shift;;
+      -w|--waitingTag) waitingTag="$2";shift;;
+      -o|--orderBy) orderBy="$2";shift;;
+      -s|--string) string="$2";shift;;
+      *) ;;
+    esac
+    shift
+  done
+  
+  local command=${1:-}
 
-	if [[ -n $command ]]; then
-	  case $1 in
-    	inbox) inbox;;
-	    today) today;;
-    	upcoming) upcoming;;
-	    next) next;;
-    	anytime)  anytime;;
-	    someday)  someday;;
-    	all) all;;
-	    nextish) nextish;;
-		completed) completed;;
-		old) old;;
-		due) due;;
-		repeating) repeating;;
-		subtasks) subtasks;;
-		projects) projects;;
-		headings) headings;;
-		cancelled) cancelled;;
-		trashed) trashed;;
-		waiting) waiting;;
-  		notes) notes;;
-		csv) csv|awk '{gsub("<[^>]*>", "")}1'|iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT;;
-		stat) limitBy="999999" stat;;
-		search) search;;
-		feedback) open https://github.com/AlexanderWillner/things.sh/issues/;;
-	    *)     usage;;
-	  esac
-	else
-		usage;
-	fi
+  if [[ -n $command ]]; then
+    case $1 in
+      inbox) inbox;;
+      today) today;;
+      upcoming) upcoming;;
+      next) next;;
+      anytime)  anytime;;
+      someday)  someday;;
+      all) all;;
+      nextish) nextish;;
+    completed) completed;;
+    old) old;;
+    due) due;;
+    repeating) repeating;;
+    subtasks) subtasks;;
+    projects) projects;;
+    headings) headings;;
+    cancelled) cancelled;;
+    trashed) trashed;;
+    waiting) waiting;;
+      notes) notes;;
+    csv) csv|awk '{gsub("<[^>]*>", "")}1'|iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT;;
+    stat) limitBy="999999" stat;;
+    search) search;;
+    feedback) open https://github.com/AlexanderWillner/things.sh/issues/;;
+      *)     usage;;
+    esac
+  else
+    usage;
+  fi
 }
 
-[[ "${BASH_SOURCE[0]}" == "${0}" ]] && main "$@"
+cleanup() {
+    : # nothing to clean up
+    # echo "$(date) $(hostname) $0: EXIT on line $2 (exit status $1)"
+}
+
+[[ "${BASH_SOURCE[0]}" == "${0}" ]] && trap 'cleanup $? $LINENO' EXIT && main "$@"
