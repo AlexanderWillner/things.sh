@@ -11,6 +11,7 @@ help:
 	@echo " * feedback : create a GitHub issue"
 
 install:
+	@echo "Hint: consider to use 'brew install AlexanderWillner/tap/things.sh' instead"
 	@install -m 0755 things.sh $(prefix)/bin
 
 clean:
