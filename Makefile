@@ -24,8 +24,8 @@ test: check
 	@echo "Running shell checks..."
 	@shellcheck things.sh
 	@echo "Running unit tests..."
-	@bashcov shunit2 test/thingsTest.sh
-	@file coverage/index.html >/dev/null 2>&1 && echo "WARNING: Coverage report not found"
+	@bashcov -s shunit2 test/thingsTest.sh
+	@file coverage/index.html
 
 style:
 	@type shfmt >/dev/null 2>&1 || (echo "Run 'go get -u mvdan.cc/sh/cmd/shfmt' first." >&2 ; exit 1)
