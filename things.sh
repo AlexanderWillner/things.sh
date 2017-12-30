@@ -480,46 +480,27 @@ SQL
 }
 
 stat() {
-  echo -n "Inbox    :"
-  inbox | wc -l
+  echo "Inbox     : $(inbox | wc -l)"
+  echo "Today     : $(today | wc -l)"
+  echo "Upcoming  : $(upcoming | wc -l)"
+  echo "Next      : $(next | wc -l)"
+  echo "Someday   : $(someday | wc -l)"
   echo ""
-  echo -n "Today    :"
-  today | wc -l
-  echo -n "Upcoming  :"
-  upcoming | wc -l
-  echo -n "Next    :"
-  next | wc -l
-  echo -n "Someday    :"
-  someday | wc -l
+  echo "Completed : $(completed | wc -l)"
+  echo "Cancelled : $(cancelled | wc -l)"
+  echo "Trashed   : $(trashed | wc -l)"
   echo ""
-  echo -n "Completed  :"
-  completed | wc -l
-  echo -n "Cancelled  :"
-  cancelled | wc -l
-  echo -n "Trashed    :"
-  trashed | wc -l
+  echo "Tasks     : $(all | wc -l)"
+  echo "Subtasks  : $(subtasks | wc -l)"
+  echo "Waiting   : $(waiting | wc -l)"
+  echo "Projects  : $(projects | wc -l)"
+  echo "Repeating : $(repeating | wc -l)"
+  echo "Nextish   : $(nextish | wc -l)"
+  echo "Headings  : $(headings | wc -l)"
   echo ""
-  echo -n "Tasks    :"
-  all | wc -l
-  echo -n "Subtasks  :"
-  subtasks | wc -l
-  echo -n "Waiting    :"
-  waiting | wc -l
-  echo -n "Projects  :"
-  projects | wc -l
-  echo -n "Repeating  :"
-  repeating | wc -l
-  echo -n "Nextish    :"
-  nextish | wc -l
-  echo -n "Headings  :"
-  headings | wc -l
-  echo ""
-  echo -n "Oldest       : "
-  limitBy="1" old
-  echo -n "Farest       : "
-  orderBy="startDate DESC" upcoming | tail -n1
-  echo -n "Days/Task  : "
-  averageCompleteTime
+  echo "Oldest    : $(limitBy="1" old)"
+  echo "Farest    : $(orderBy='startDate DESC' upcoming | tail -n1)"
+  echo "Days/Task : $(averageCompleteTime)"
 }
 
 search() {
