@@ -70,20 +70,21 @@ COMMAND:
   completed
   cancelled
   trashed
-  all       (show all tasks)
-  nextish   (show $limitBy next tasks that are also in someday projects)
-  old       (show $limitBy tasks ordered by '$orderBy')
-  due       (show $limitBy tasks ordered by due date)
-  waiting   (show $limitBy tasks with the tag '$waitingTag' ordered by '$orderBy')
-  repeating (show $limitBy repeating tasks orderd by '$orderBy')
-  subtasks  (show $limitBy subtasks)
-  projects  (show $limitBy projects ordered by creation date)
-  headings  (show $limitBy headings ordered by creation date)
-  notes     (show $limitBy notes as <headings>: <notes> ordered by creation date)
-  csv       (export all tasks as semicolon seperated values incl. notes and Excel friendly)
-  stat      (provide an overview of the numbers of tasks)
-  search    (provide details about specific tasks)
-  feedback  (give feedback, request and propose changes)
+  all        (show all tasks)
+  nextish    (show $limitBy next tasks that are also in someday projects)
+  old        (show $limitBy tasks ordered by '$orderBy')
+  due        (show $limitBy tasks ordered by due date)
+  waiting    (show $limitBy tasks with the tag '$waitingTag' ordered by '$orderBy')
+  repeating  (show $limitBy repeating tasks orderd by '$orderBy')
+  subtasks   (show $limitBy subtasks)
+  projects   (show $limitBy projects ordered by creation date)
+  headings   (show $limitBy headings ordered by creation date)
+  notes      (show $limitBy notes as <headings>: <notes> ordered by creation date)
+  csv        (export all tasks as semicolon seperated values incl. notes and Excel friendly)
+  stat       (provide an overview of the numbers of tasks)
+  productive (provide details about how efficient each day was)
+  search     (provide details about specific tasks)
+  feedback   (give feedback, request and propose changes)
 
 OPTIONS:
   -l|--limitBy <number>    Limit output by <number> of results
@@ -422,6 +423,27 @@ AND $ISCOMPLETED;
 SQL
 }
 
+longestDescription() {
+  sqlite3 "$THINGSDB" <<-SQL
+SELECT LENGTH(title), title
+FROM $TASKTABLE
+WHERE $ISNOTTRASHED AND $ISTASK AND $ISOPEN
+ORDER BY LENGTH(title) DESC
+LIMIT 1
+SQL
+}
+
+productiveDays() {
+  sqlite3 "$THINGSDB" <<-SQL
+SELECT COUNT(title) AS TasksDone, date(stopDate,'unixepoch') AS DAY
+FROM $TASKTABLE
+WHERE DAY NOT NULL
+GROUP BY DAY
+ORDER BY TasksDone DESC
+LIMIT $limitBy;
+SQL
+}
+
 notes() {
   sqlite3 "$THINGSDB" <<-SQL
 .mode list
@@ -501,6 +523,8 @@ stat() {
   echo ""
   echo "Oldest    : $(limitBy="1" old)"
   echo "Farest    : $(orderBy='startDate DESC' upcoming | tail -n1)"
+  echo "Longest   : $(longestDescription)"
+  echo "Productive: $(productiveDays|head -n1)"
   echo "Days/Task : $(averageCompleteTime)"
 }
 
@@ -589,6 +613,7 @@ main() {
     inbox) inbox ;;
     today) today ;;
     upcoming) upcoming ;;
+    productive) productiveDays ;;
     next) next ;;
     anytime) anytime ;;
     someday) someday ;;
