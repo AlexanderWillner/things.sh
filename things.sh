@@ -95,16 +95,17 @@ EOF
 }
 
 inbox() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT title
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISTASK
 AND $ISNOTSTARTED AND $ISOPEN;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 today() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT 
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 
@@ -122,14 +123,15 @@ AND TASK.$ISSTARTED
 AND TASK.startdate is NOT NULL
 ORDER BY TASK.startdate, TASK.todayIndex;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 upcoming() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT 
   CASE 
     WHEN TASK.startDate IS NULL THEN "0000-00-00" 
-    ELSE date(TASK.startDate,'unixepoch')
+    ELSE date(TASK.startDate,"unixepoch")
   END,
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 
@@ -146,6 +148,7 @@ WHERE TASK.$ISNOTTRASHED AND TASK.$ISOPEN AND TASK.$ISTASK
 AND TASK.$ISPOSTPONED AND (TASK.startDate NOT NULL OR TASK.recurrenceRule NOT NULL)
 ORDER BY TASK.startdate, TASK.todayIndex;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 anytime() {
@@ -153,7 +156,7 @@ anytime() {
 }
 
 next() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 
@@ -181,10 +184,11 @@ AND (
   )
 ORDER BY TASK.todayIndex;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 someday() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 
@@ -200,10 +204,11 @@ LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
 WHERE TASK.$ISNOTTRASHED AND TASK.$ISTASK
 AND TASK.$ISPOSTPONED AND TASK.$ISOPEN;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 completed() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 
@@ -219,10 +224,11 @@ LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
 WHERE TASK.$ISNOTTRASHED AND TASK.$ISTASK
 AND TASK.$ISCOMPLETED;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 nextish() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 
@@ -238,10 +244,11 @@ LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
 WHERE TASK.$ISNOTTRASHED AND TASK.$ISSTARTED AND TASK.$ISOPEN AND TASK.$ISTASK
 LIMIT $limitBy;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 all() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT 
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 
@@ -256,10 +263,11 @@ LEFT OUTER JOIN $AREATABLE AREA ON TASK.area = AREA.uuid
 LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
 WHERE TASK.$ISNOTTRASHED AND TASK.$ISOPEN AND TASK.$ISTASK;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 subtasks() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT 
   TASK.title,
   CHECKLIST.title
@@ -268,10 +276,11 @@ LEFT OUTER JOIN $TASKTABLE TASK ON CHECKLIST.task = TASK.uuid
 WHERE TASK.$ISOPEN AND TASK.$ISNOTTRASHED
 LIMIT $limitBy;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 waiting() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT 
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 
@@ -290,12 +299,13 @@ AND TAGS.tags=(SELECT uuid FROM $TAGTABLE WHERE title='$waitingTag')
 ORDER BY TASK.$orderBy
 LIMIT $limitBy;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 old() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT
-  date(TASK.creationDate,'unixepoch'),
+  date(TASK.creationDate,"unixepoch"),
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 
     WHEN PROJECT.title IS NOT NULL THEN PROJECT.title
@@ -311,12 +321,13 @@ WHERE TASK.$ISNOTTRASHED AND TASK.$ISOPEN AND TASK.$ISSTARTED AND TASK.$ISTASK
 ORDER BY TASK.$orderBy
 LIMIT $limitBy;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 due() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT
-  date(TASK.dueDate,'unixepoch'),
+  date(TASK.dueDate,"unixepoch"),
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 
     WHEN PROJECT.title IS NOT NULL THEN PROJECT.title
@@ -333,10 +344,11 @@ AND TASK.dueDate NOT NULL
 ORDER BY TASK.dueDate
 LIMIT $limitBy;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 repeating() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT title
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISOPEN AND $ISPOSTPONED
@@ -344,10 +356,11 @@ AND recurrenceRule NOT NULL
 ORDER BY $orderBy
 LIMIT $limitBy;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 projects() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 
@@ -364,10 +377,11 @@ WHERE TASK.$ISNOTTRASHED AND TASK.$ISOPEN AND TASK.$ISPROJECT
 ORDER BY TASK.$orderBy
 LIMIT $limitBy;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 headings() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 
@@ -384,10 +398,11 @@ WHERE TASK.$ISNOTTRASHED AND TASK.$ISOPEN AND TASK.$ISHEADING
 ORDER BY TASK.$orderBy
 LIMIT $limitBy;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 cancelled() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 
@@ -403,73 +418,75 @@ LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
 WHERE TASK.$ISNOTTRASHED AND TASK.$ISCANCELLED AND TASK.$ISTASK
 ORDER BY TASK.$orderBy;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 trashed() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT title
 FROM $TASKTABLE
 WHERE $ISTRASHED AND $ISTASK
 ORDER BY $orderBy;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 averageCompleteTime() {
-  sqlite3 "$THINGSDB" <<-SQL
-SELECT ROUND(AVG(JULIANDAY(stopDate,'unixepoch')-JULIANDAY(creationDate,'unixepoch')))
+  read -rd '' query <<-SQL || true
+SELECT ROUND(AVG(JULIANDAY(stopDate,"unixepoch")-JULIANDAY(creationDate,"unixepoch")))
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISTASK
 AND $ISCOMPLETED;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 longestDescription() {
-  sqlite3 "$THINGSDB" <<-SQL
+  read -rd '' query <<-SQL || true
 SELECT LENGTH(title), title
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISTASK AND $ISOPEN
 ORDER BY LENGTH(title) DESC
 LIMIT 1
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 productiveDays() {
-  sqlite3 "$THINGSDB" <<-SQL
-SELECT COUNT(title) AS TasksDone, date(stopDate,'unixepoch') AS DAY
+  read -rd '' query <<-SQL || true
+SELECT COUNT(title) AS TasksDone, date(stopDate,"unixepoch") AS DAY
 FROM $TASKTABLE
 WHERE DAY NOT NULL
 GROUP BY DAY
 ORDER BY TasksDone DESC
 LIMIT $limitBy;
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 notes() {
-  sqlite3 "$THINGSDB" <<-SQL
-.mode list
-.separator ": "
+  read -rd '' query <<-SQL || true
 SELECT
   title,
   notes
 FROM $TASKTABLE
-WHERE $ISNOTTRASHED AND $ISOPEN
+WHERE $ISNOTTRASHED AND $ISOPEN AND notes NOT NULL
 ORDER BY $orderBy;
 SQL
+  sqlite3 -list -separator ': ' "$THINGSDB" "${query}"
 }
 
 csv() {
   echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";"Completion Date";"Recurring";Project;Area;Subtask;Notes'
 
-  sqlite3 "$THINGSDB" <<-SQL
-.mode csv
-.separator ";"
+  read -rd '' query <<-SQL || true
 SELECT 
   T1.title, 
-  date(T1.creationDate,'unixepoch'),
-  date(T1.userModificationDate,'unixepoch'),
-  date(T1.dueDate,'unixepoch'),
-  date(T1.startDate,'unixepoch'),
-  date(T1.stopDate,'unixepoch'),
+  date(T1.creationDate,"unixepoch"),
+  date(T1.userModificationDate,"unixepoch"),
+  date(T1.dueDate,"unixepoch"),
+  date(T1.startDate,"unixepoch"),
+  date(T1.stopDate,"unixepoch"),
   CASE WHEN T1.recurrenceRule IS NULL THEN 'False' ELSE 'True' END,
   PROJECT.title,
   AREA.title,
@@ -480,17 +497,16 @@ LEFT OUTER JOIN $TASKTABLE PROJECT ON T1.project = PROJECT.uuid
 LEFT OUTER JOIN $AREATABLE AREA ON T1.area = AREA.uuid
 WHERE T1.$ISNOTTRASHED AND (T1.$ISOPEN OR T1.$ISCOMPLETED) AND T1.$ISTASK;
 SQL
+  sqlite3 -list -separator ';' "$THINGSDB" "${query}"
 
-  sqlite3 "$THINGSDB" <<-SQL
-.mode csv
-.separator ";"
+  read -rd '' query <<-SQL || true
 SELECT 
   T2.title,
-  date(T1.creationDate,'unixepoch'),
-  date(T1.userModificationDate,'unixepoch'),
+  date(T1.creationDate,"unixepoch"),
+  date(T1.userModificationDate,"unixepoch"),
   "",
   "",
-  date(T1.stopDate,'unixepoch'),
+  date(T1.stopDate,"unixepoch"),
   "",
   "",
   "",
@@ -500,6 +516,7 @@ FROM TMChecklistItem T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.task = T2.uuid
 WHERE (T2.$ISOPEN OR T2.$ISCOMPLETED) AND T2.$ISNOTTRASHED;
 SQL
+  sqlite3 -list -separator ';' "$THINGSDB" "${query}"
 }
 
 stat() {
@@ -524,21 +541,20 @@ stat() {
   echo "Oldest    : $(limitBy="1" old)"
   echo "Farest    : $(orderBy='startDate DESC' upcoming | tail -n1)"
   echo "Longest   : $(longestDescription)"
-  echo "Productive: $(productiveDays|head -n1)"
+  echo "Productive: $(productiveDays | head -n1)"
   echo "Days/Task : $(averageCompleteTime)"
 }
 
 search() {
   [[ -z "${string:-}" ]] && echo "HINT: Use '-s' to set search string first" && exit 1
-  sqlite3 "$THINGSDB" <<-SQL
-.mode line
+  read -rd '' query <<-SQL || true
 SELECT 
   T1.title as "Title", 
-  date(T1.creationDate,'unixepoch') as "Created",
-  date(T1.userModificationDate,'unixepoch') as "Modified",
-  date(T1.dueDate,'unixepoch') as "Due",
-  date(T1.startDate,'unixepoch') as "Start",
-  date(T1.stopDate,'unixepoch') as "Stopped",
+  date(T1.creationDate,"unixepoch") as "Created",
+  date(T1.userModificationDate,"unixepoch") as "Modified",
+  date(T1.dueDate,"unixepoch") as "Due",
+  date(T1.startDate,"unixepoch") as "Start",
+  date(T1.stopDate,"unixepoch") as "Stopped",
   T2.title as "Project",
   T3.title as "Area"
 FROM $TASKTABLE T1
@@ -547,20 +563,21 @@ LEFT OUTER JOIN $AREATABLE T3 ON T1.area = T3.uuid
 WHERE T1.$ISNOTTRASHED AND T1.$ISTASK
 AND (T1.title LIKE "%$string%" OR T2.title LIKE "%$string%");
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 
-  sqlite3 "$THINGSDB" <<-SQL
-.mode line
+  read -rd '' query <<-SQL || true
 SELECT 
   T2.title as "Title",
-  date(T1.creationDate,'unixepoch') as "Created",
-  date(T1.userModificationDate,'unixepoch') as "Modified",
-  date(T1.stopDate,'unixepoch') as "Stopped",
+  date(T1.creationDate,"unixepoch") as "Created",
+  date(T1.userModificationDate,"unixepoch") as "Modified",
+  date(T1.stopDate,"unixepoch") as "Stopped",
   T1.title as "Task"
 FROM TMChecklistItem T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.task = T2.uuid
 WHERE T2.$ISNOTTRASHED
 AND T1.title LIKE "%$string%";
 SQL
+  sqlite3 "$THINGSDB" "${query}"
 }
 
 require_sqlite3() {

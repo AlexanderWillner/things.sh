@@ -89,13 +89,14 @@ Days/Task : 39.0
 ```
 
 ## CREDITS
- * Author   : Arjan van der Gaag (script for Things 2)
- * Author   : Alexander Willner (updates for Things 3, added many more commands, a lot refactoring)
- * License  : Whatever. Use at your own risk.
- * Source   : https://github.com/AlexanderWillner/things.sh
- * https://github.com/koalaman/shellcheck
- * https://dev.to/thiht/shell-scripts-matter
- * https://google.github.io/styleguide/shell.xml
- * https://kvz.io/blog/2013/11/21/bash-best-practices/
- * https://github.com/progrium/bashstyle
- * https://github.com/mvdan/sh/
+ * Author        : Arjan van der Gaag (script for Things 2)
+ * Author        : Alexander Willner (updates for Things 3, added many more commands, a lot refactoring)
+ * License       : Whatever. Use at your own risk.
+ * Source        : https://github.com/AlexanderWillner/things.sh
+ * Shell checker : https://github.com/koalaman/shellcheck
+ * Shell cleanup : https://github.com/mvdan/sh/
+ * Shell tips    : https://dev.to/thiht/shell-scripts-matter
+ * Shell tips    : https://google.github.io/styleguide/shell.xml
+ * Shell tips    : https://kvz.io/blog/2013/11/21/bash-best-practices/
+ * Shell tips.   : https://github.com/progrium/bashstyle
+ 
