@@ -25,7 +25,7 @@ test: check
 	@shellcheck things.sh
 	@echo "Running unit tests..."
 	@bashcov -s shunit2 test/thingsTest.sh
-	@file coverage/index.html
+	@file coverage/index.html||true
 
 style:
 	@type shfmt >/dev/null 2>&1 || (echo "Run 'go get -u mvdan.cc/sh/cmd/shfmt' first." >&2 ; exit 1)
