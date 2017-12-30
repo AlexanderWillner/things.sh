@@ -436,7 +436,7 @@ SQL
 }
 
 csv() {
-  echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";"Completion Date";Project;Area;Subtask;Notes'
+  echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";"Completion Date";"Recurring";Project;Area;Subtask;Notes'
 
   sqlite3 "$THINGSDB" <<-SQL
 .mode csv
@@ -448,13 +448,14 @@ SELECT
   date(T1.dueDate,'unixepoch'),
   date(T1.startDate,'unixepoch'),
   date(T1.stopDate,'unixepoch'),
-  T2.title,
-  T3.title,
+  CASE WHEN T1.recurrenceRule IS NULL THEN 'False' ELSE 'True' END,
+  PROJECT.title,
+  AREA.title,
   "",
   REPLACE(REPLACE(T1.notes, CHAR(13), ', '), CHAR(10), ', ')
 FROM $TASKTABLE T1
-LEFT OUTER JOIN $TASKTABLE T2 ON T1.project = T2.uuid
-LEFT OUTER JOIN $AREATABLE T3 ON T1.area = T3.uuid
+LEFT OUTER JOIN $TASKTABLE PROJECT ON T1.project = PROJECT.uuid
+LEFT OUTER JOIN $AREATABLE AREA ON T1.area = AREA.uuid
 WHERE T1.$ISNOTTRASHED AND (T1.$ISOPEN OR T1.$ISCOMPLETED) AND T1.$ISTASK;
 SQL
 
@@ -468,6 +469,7 @@ SELECT
   "",
   "",
   date(T1.stopDate,'unixepoch'),
+  "",
   "",
   "",
   "",
