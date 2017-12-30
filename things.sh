@@ -23,7 +23,6 @@
 #
 # Author  : Arjan van der Gaag (script for Things 2)
 # Author  : Alexander Willner (updates for Things 3, added many more commands)
-# Date    : 2017-12-24
 # License : Whatever. Use at your own risk.
 # Source  : https://github.com/AlexanderWillner/things.sh
 #
