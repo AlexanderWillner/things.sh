@@ -82,7 +82,8 @@ COMMAND:
   notes      (show $limitBy notes as <headings>: <notes> ordered by creation date)
   csv        (export all tasks as semicolon seperated values incl. notes and Excel friendly)
   stat       (provide an overview of the numbers of tasks)
-  productive (provide details about how efficient each day was)
+  closed     (show $limitBy days on which most tasks were closed)
+  created    (show $limitBy days on which most tasks were created)
   search     (provide details about specific tasks)
   feedback   (give feedback, request and propose changes)
 
@@ -452,13 +453,25 @@ SQL
   sqlite3 "$THINGSDB" "${query}"
 }
 
-productiveDays() {
+mostClosed() {
   read -rd '' query <<-SQL || true
 SELECT COUNT(title) AS TasksDone, date(stopDate,"unixepoch") AS DAY
 FROM $TASKTABLE
 WHERE DAY NOT NULL
 GROUP BY DAY
 ORDER BY TasksDone DESC
+LIMIT $limitBy;
+SQL
+  sqlite3 "$THINGSDB" "${query}"
+}
+
+mostCreated() {
+  read -rd '' query <<-SQL || true
+SELECT COUNT(title) AS TasksCreated, date(creationDate,"unixepoch") AS DAY
+FROM $TASKTABLE
+WHERE DAY NOT NULL
+GROUP BY DAY
+ORDER BY TasksCreated DESC
 LIMIT $limitBy;
 SQL
   sqlite3 "$THINGSDB" "${query}"
@@ -541,7 +554,8 @@ stat() {
   echo "Oldest    : $(limitBy="1" old)"
   echo "Farest    : $(orderBy='startDate DESC' upcoming | tail -n1)"
   echo "Longest   : $(longestDescription)"
-  echo "Productive: $(productiveDays | head -n1)"
+  echo "Closed    : $(mostClosed | head -n1)"
+  echo "Created   : $(mostCreated | head -n1)"
   echo "Days/Task : $(averageCompleteTime)"
 }
 
@@ -630,7 +644,8 @@ main() {
     inbox) inbox ;;
     today) today ;;
     upcoming) upcoming ;;
-    productive) productiveDays ;;
+    closed) mostClosed ;;
+    created) mostCreated ;;
     next) next ;;
     anytime) anytime ;;
     someday) someday ;;
