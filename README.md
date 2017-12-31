@@ -18,9 +18,11 @@ You can use [brew](https://brew.sh) to install and later update the script:
 
 These graphs have been generated based on the CSV export.
 
-![Example 1](img/example1.jpg)
+![Tasks in the last 14 days](img/example3.jpg)
 
-![Example 2](img/example2.jpg)
+![Tasks in the last year](img/example1.jpg)
+
+![Tasks since using Things](img/example2.jpg)
 
 ## Instructions
 
