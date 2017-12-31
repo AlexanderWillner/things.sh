@@ -10,8 +10,10 @@ Simple read-only comand-line interface to your Things 3 database (incl. CSV expo
 
 You can use [brew](https://brew.sh) to install and later update the script:
 
-```brew install AlexanderWillner/tap/things.sh```
-
+ - Prepare: ```brew tap AlexanderWillner/tap```
+ - Install: ```brew install things.sh```
+ - Upgrade: ```brew upgrade```
+ 
 ## Example Graphs
 
 These graphs have been generated based on the CSV export.
