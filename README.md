@@ -12,6 +12,14 @@ You can use [brew](https://brew.sh) to install and later update the script:
 
 ```brew install AlexanderWillner/tap/things.sh```
 
+## Example Graphs
+
+These graphs have been generated based on the CSV export.
+
+![Example 1](img/example1.jpg)
+
+![Example 2](img/example2.jpg)
+
 ## Instructions
 
 Note that you could override the location of the database used by setting the THINGSDB environment variable. For usage information, run the script with no arguments or with "help":

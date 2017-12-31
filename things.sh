@@ -82,10 +82,13 @@ COMMAND:
   notes         (show $limitBy notes as <headings>: <notes> ordered by creation date)
   csv           (export all tasks as semicolon seperated values incl. notes and Excel friendly)
   stat          (provide an overview of the numbers of tasks)
+  statcsv       (export some statistics as semicolon seperated values)
   mostClosed    (show $limitBy days on which most tasks were closed)
   mostCreated   (show $limitBy days on which most tasks were created)
   mostCancelled (show $limitBy days on which most tasks were cancelled)
   mostTrashed   (show $limitBy days on which most tasks were trashed)
+  mostTasks     (show $limitBy projects which have most tasks)
+  mostCharacters(show $limitBy tasks which have most characters)
   search        (provide details about specific tasks)
   feedback      (give feedback, request and propose changes)
 
@@ -445,13 +448,13 @@ SQL
   sqlite3 "$THINGSDB" "${query}"
 }
 
-longestDescription() {
+mostCharacters() {
   read -rd '' query <<-SQL || true
 SELECT LENGTH(title), title
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISTASK AND $ISOPEN
 ORDER BY LENGTH(title) DESC
-LIMIT 1
+LIMIT $limitBy
 SQL
   sqlite3 "$THINGSDB" "${query}"
 }
@@ -503,6 +506,20 @@ LIMIT $limitBy;
 SQL
   sqlite3 "$THINGSDB" "${query}"
 }
+
+mostTasks() {
+  read -rd '' query <<-SQL || true
+SELECT COUNT(TASK.title) AS Tasks, PROJECT.title
+FROM $TASKTABLE TASK
+LEFT OUTER JOIN $TASKTABLE PROJECT ON TASK.project = PROJECT.uuid
+WHERE TASK.$ISTASK AND TASK.$ISNOTTRASHED AND TASK.$ISOPEN AND PROJECT.title IS NOT NULL
+GROUP BY PROJECT.title
+ORDER BY Tasks DESC
+LIMIT $limitBy;
+SQL
+  sqlite3 "$THINGSDB" "${query}"
+}
+
 
 notes() {
   read -rd '' query <<-SQL || true
@@ -559,6 +576,48 @@ SQL
   sqlite3 -list -separator ';' "$THINGSDB" "${query}"
 }
 
+statcsv() {
+  echo '"Date";"Created";"Closed";"Cancelled";"Trashed"'
+  read -rd '' query <<-SQL || true
+WITH RECURSIVE
+  cnt(x) AS (
+     SELECT 0
+     UNION ALL
+     SELECT x+1 FROM cnt
+      LIMIT (SELECT ((julianday('$(date +"%Y-%m-%d")') - julianday('$(date -v-1y +"%Y-%m-%d")'))) + 1)
+  )
+
+SELECT 
+  date(julianday('$(date -v-1y +"%Y-%m-%d")'), '+' || x || ' days') as date,
+  CREATED.TasksCreated,
+  CLOSED.TasksDone,
+  CANCELLED.TasksDone,
+  TRASHED.TasksDone
+FROM cnt
+  LEFT JOIN 
+    (SELECT COUNT(title) AS TasksCreated, date(creationDate,"unixepoch") AS DAY
+     FROM $TASKTABLE WHERE DAY NOT NULL GROUP BY DAY
+    ) AS CREATED
+    ON CREATED.DAY = date
+  LEFT JOIN 
+    (SELECT COUNT(title) AS TasksDone, date(userModificationDate,"unixepoch") AS DAY
+      FROM $TASKTABLE WHERE DAY NOT NULL AND $ISTRASHED GROUP BY DAY
+    ) AS TRASHED
+    ON TRASHED.DAY = date
+  LEFT JOIN 
+    (SELECT COUNT(title) AS TasksDone, date(stopDate,"unixepoch") AS DAY
+     FROM $TASKTABLE WHERE DAY NOT NULL AND $ISCOMPLETED GROUP BY DAY
+    ) AS CLOSED
+    ON CLOSED.DAY = date
+  LEFT JOIN
+    (SELECT COUNT(title) AS TasksDone, date(stopDate,"unixepoch") AS DAY
+     FROM $TASKTABLE WHERE DAY NOT NULL AND $ISCANCELLED GROUP BY DAY
+    ) AS CANCELLED
+    ON CANCELLED.DAY = date    
+SQL
+  sqlite3 -csv -separator ';' "$THINGSDB" "${query}"
+}
+
 stat() {
   echo "Inbox     : $(inbox | wc -l)"
   echo "Today     : $(today | wc -l)"
@@ -579,13 +638,14 @@ stat() {
   echo "Headings  : $(headings | wc -l)"
   echo ""
   echo "Oldest    : $(limitBy="1" old)"
-  echo "Farest    : $(orderBy='startDate DESC' upcoming | tail -n1)"
-  echo "Longest   : $(longestDescription)"
+  echo "Farest    : $(upcoming | tail -n1)"
+  echo "Longest   : $(limitBy="1" mostCharacters)"
+  echo "Largest   : $(limitBy="1" mostTasks)"
   echo ""
-  echo "Created   : $(mostCreated | head -n1)"
-  echo "Closed    : $(mostClosed | head -n1)"
-  echo "Cancelled : $(mostCancelled | head -n1)"
-  echo "Trashed   : $(mostTrashed | head -n1)"
+  echo "Created   : $(limitBy="1" mostCreated)"
+  echo "Closed    : $(limitBy="1" mostClosed)"
+  echo "Cancelled : $(limitBy="1" mostCancelled)"
+  echo "Trashed   : $(limitBy="1" mostTrashed)"
   echo "Days/Task : $(averageCompleteTime)"
 }
 
@@ -674,10 +734,12 @@ main() {
     inbox) inbox ;;
     today) today ;;
     upcoming) upcoming ;;
+    mostCharacters) mostCharacters ;;
     mostClosed) mostClosed ;;
     mostCreated) mostCreated ;;
     mostCancelled) mostCancelled ;;
     mostTrashed) mostTrashed ;;
+    mostTasks) mostTasks ;;
     next) next ;;
     anytime) anytime ;;
     someday) someday ;;
@@ -696,6 +758,7 @@ main() {
     notes) notes ;;
     csv) csv | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT ;;
     stat) limitBy="999999" stat ;;
+    statcsv) limitBy="999999" statcsv ;;
     search) search ;;
     feedback) open https://github.com/AlexanderWillner/things.sh/issues/ ;;
     *) usage ;;
