@@ -35,6 +35,7 @@ set -eo pipefail
 limitBy="20"
 waitingTag="Waiting for"
 orderBy="creationDate"
+exportRange="-1 year"
 
 readonly PROGNAME=$(basename "$0")
 readonly DEFAULT_DB=~/Library/Containers/com.culturedcode.ThingsMac/Data/Library/Application\ Support/Cultured\ Code/Things/Things.sqlite3
@@ -82,7 +83,7 @@ COMMAND:
   notes         (show $limitBy notes as <headings>: <notes> ordered by creation date)
   csv           (export all tasks as semicolon seperated values incl. notes and Excel friendly)
   stat          (provide an overview of the numbers of tasks)
-  statcsv       (export some statistics as semicolon seperated values)
+  statcsv       (export some statistics as semicolon seperated values for '$exportRange')
   mostClosed    (show $limitBy days on which most tasks were closed)
   mostCreated   (show $limitBy days on which most tasks were created)
   mostCancelled (show $limitBy days on which most tasks were cancelled)
@@ -97,6 +98,7 @@ OPTIONS:
   -w|--waitingTag <tag>    Set waiting tag to <tag>
   -o|--orderBy <column>    Sort output by <column> (e.g. 'userModificationDate' or 'creationDate')
   -s|--string <string>     String <string> to search for
+  -r|--range <string>      Limit CSV statistic export by <string>
 EOF
 }
 
@@ -132,7 +134,7 @@ SQL
   sqlite3 "$THINGSDB" "${query}"
 }
 
-upcoming() {
+getUpcoming() {
   read -rd '' query <<-SQL || true
 SELECT 
   CASE 
@@ -152,9 +154,9 @@ LEFT OUTER JOIN $AREATABLE AREA ON TASK.area = AREA.uuid
 LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
 WHERE TASK.$ISNOTTRASHED AND TASK.$ISOPEN AND TASK.$ISTASK
 AND TASK.$ISPOSTPONED AND (TASK.startDate NOT NULL OR TASK.recurrenceRule NOT NULL)
-ORDER BY TASK.startdate, TASK.todayIndex;
+ORDER BY TASK.startdate, TASK.todayIndex
 SQL
-  sqlite3 "$THINGSDB" "${query}"
+  echo "${query}"
 }
 
 anytime() {
@@ -438,17 +440,17 @@ SQL
   sqlite3 "$THINGSDB" "${query}"
 }
 
-averageCompleteTime() {
+getAverageCompleteTime() {
   read -rd '' query <<-SQL || true
 SELECT ROUND(AVG(JULIANDAY(stopDate,"unixepoch")-JULIANDAY(creationDate,"unixepoch")))
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISTASK
 AND $ISCOMPLETED;
 SQL
-  sqlite3 "$THINGSDB" "${query}"
+  echo "${query}"
 }
 
-mostCharacters() {
+getMostCharacters() {
   read -rd '' query <<-SQL || true
 SELECT LENGTH(title), title
 FROM $TASKTABLE
@@ -456,55 +458,59 @@ WHERE $ISNOTTRASHED AND $ISTASK AND $ISOPEN
 ORDER BY LENGTH(title) DESC
 LIMIT $limitBy
 SQL
-  sqlite3 "$THINGSDB" "${query}"
+  echo "${query}"
 }
 
-mostClosed() {
+getMostClosed() {
   read -rd '' query <<-SQL || true
 SELECT COUNT(title) AS TasksDone, date(stopDate,"unixepoch") AS DAY
 FROM $TASKTABLE
 WHERE DAY NOT NULL AND $ISCOMPLETED
 GROUP BY DAY
 ORDER BY TasksDone DESC
-LIMIT $limitBy;
+LIMIT $limitBy
 SQL
-  sqlite3 "$THINGSDB" "${query}"
+  echo "${query}"
 }
 
-mostCancelled() {
+getMostCancelled() {
   read -rd '' query <<-SQL || true
 SELECT COUNT(title) AS TasksDone, date(stopDate,"unixepoch") AS DAY
 FROM $TASKTABLE
 WHERE DAY NOT NULL AND $ISCANCELLED
 GROUP BY DAY
 ORDER BY TasksDone DESC
-LIMIT $limitBy;
+LIMIT $limitBy
 SQL
-  sqlite3 "$THINGSDB" "${query}"
+  echo "${query}"
 }
 
-mostTrashed() {
+execute() {
+  sqlite3 "$THINGSDB" "$1"
+}
+
+getMostTrashed() {
   read -rd '' query <<-SQL || true
 SELECT COUNT(title) AS TasksDone, date(userModificationDate,"unixepoch") AS DAY
 FROM $TASKTABLE
 WHERE DAY NOT NULL AND $ISTRASHED
 GROUP BY DAY
 ORDER BY TasksDone DESC
-LIMIT $limitBy;
+LIMIT $limitBy
 SQL
-  sqlite3 "$THINGSDB" "${query}"
+  echo "${query}"
 }
 
-mostCreated() {
+getMostCreated() {
   read -rd '' query <<-SQL || true
 SELECT COUNT(title) AS TasksCreated, date(creationDate,"unixepoch") AS DAY
 FROM $TASKTABLE
 WHERE DAY NOT NULL
 GROUP BY DAY
 ORDER BY TasksCreated DESC
-LIMIT $limitBy;
+LIMIT $limitBy
 SQL
-  sqlite3 "$THINGSDB" "${query}"
+  echo "$query"
 }
 
 mostTasks() {
@@ -515,7 +521,7 @@ LEFT OUTER JOIN $TASKTABLE PROJECT ON TASK.project = PROJECT.uuid
 WHERE TASK.$ISTASK AND TASK.$ISNOTTRASHED AND TASK.$ISOPEN AND PROJECT.title IS NOT NULL
 GROUP BY PROJECT.title
 ORDER BY Tasks DESC
-LIMIT $limitBy;
+LIMIT $limitBy
 SQL
   sqlite3 "$THINGSDB" "${query}"
 }
@@ -577,43 +583,28 @@ SQL
 }
 
 statcsv() {
+  limitBy=999999
   echo '"Date";"Created";"Closed";"Cancelled";"Trashed"'
   read -rd '' query <<-SQL || true
 WITH RECURSIVE
-  cnt(x) AS (
+  timeseries(x) AS (
      SELECT 0
      UNION ALL
-     SELECT x+1 FROM cnt
-      LIMIT (SELECT ((julianday('$(date +"%Y-%m-%d")') - julianday('$(date -v-1y +"%Y-%m-%d")'))) + 1)
+     SELECT x+1 FROM timeseries
+      LIMIT (SELECT ((julianday('now') - julianday('now', '$exportRange'))) + 1)
   )
 
 SELECT 
-  date(julianday('$(date -v-1y +"%Y-%m-%d")'), '+' || x || ' days') as date,
+  date(julianday('now', '$exportRange'), '+' || x || ' days') as date,
   CREATED.TasksCreated,
   CLOSED.TasksDone,
   CANCELLED.TasksDone,
   TRASHED.TasksDone
-FROM cnt
-  LEFT JOIN 
-    (SELECT COUNT(title) AS TasksCreated, date(creationDate,"unixepoch") AS DAY
-     FROM $TASKTABLE WHERE DAY NOT NULL GROUP BY DAY
-    ) AS CREATED
-    ON CREATED.DAY = date
-  LEFT JOIN 
-    (SELECT COUNT(title) AS TasksDone, date(userModificationDate,"unixepoch") AS DAY
-      FROM $TASKTABLE WHERE DAY NOT NULL AND $ISTRASHED GROUP BY DAY
-    ) AS TRASHED
-    ON TRASHED.DAY = date
-  LEFT JOIN 
-    (SELECT COUNT(title) AS TasksDone, date(stopDate,"unixepoch") AS DAY
-     FROM $TASKTABLE WHERE DAY NOT NULL AND $ISCOMPLETED GROUP BY DAY
-    ) AS CLOSED
-    ON CLOSED.DAY = date
-  LEFT JOIN
-    (SELECT COUNT(title) AS TasksDone, date(stopDate,"unixepoch") AS DAY
-     FROM $TASKTABLE WHERE DAY NOT NULL AND $ISCANCELLED GROUP BY DAY
-    ) AS CANCELLED
-    ON CANCELLED.DAY = date    
+FROM timeseries
+  LEFT JOIN ($(getMostCreated)) AS CREATED ON CREATED.DAY = date
+  LEFT JOIN ($(getMostTrashed)) AS TRASHED ON TRASHED.DAY = date
+  LEFT JOIN ($(getMostClosed)) AS CLOSED ON CLOSED.DAY = date
+  LEFT JOIN ($(getMostCancelled)) AS CANCELLED ON CANCELLED.DAY = date    
 SQL
   sqlite3 -csv -separator ';' "$THINGSDB" "${query}"
 }
@@ -621,7 +612,7 @@ SQL
 stat() {
   echo "Inbox     : $(inbox | wc -l)"
   echo "Today     : $(today | wc -l)"
-  echo "Upcoming  : $(upcoming | wc -l)"
+  echo "Upcoming  : $(execute "$(getUpcoming)" | wc -l)"
   echo "Next      : $(next | wc -l)"
   echo "Someday   : $(someday | wc -l)"
   echo ""
@@ -638,15 +629,19 @@ stat() {
   echo "Headings  : $(headings | wc -l)"
   echo ""
   echo "Oldest    : $(limitBy="1" old)"
-  echo "Farest    : $(upcoming | tail -n1)"
-  echo "Longest   : $(limitBy="1" mostCharacters)"
+  echo "Farest    : $(execute "$(getUpcoming)"|tail -n1)"
+  echo "Longest   : $(execute "$(limitBy="1" getMostCharacters)")"
   echo "Largest   : $(limitBy="1" mostTasks)"
   echo ""
-  echo "Created   : $(limitBy="1" mostCreated)"
-  echo "Closed    : $(limitBy="1" mostClosed)"
-  echo "Cancelled : $(limitBy="1" mostCancelled)"
-  echo "Trashed   : $(limitBy="1" mostTrashed)"
-  echo "Days/Task : $(averageCompleteTime)"
+  echo "Created   : $(execute "$(limitBy=1 getMostCreated)")"
+  echo "Closed    : $(execute "$(limitBy=1 getMostClosed)")"
+  echo "Cancelled : $(execute "$(limitBy=1 getMostCancelled)")"
+  echo "Trashed   : $(execute "$(limitBy=1 getMostTrashed)")"
+  echo "Days/Task : $(execute "$(getAverageCompleteTime)")"
+}
+
+execute() {
+  sqlite3 "$THINGSDB" "$1"
 }
 
 search() {
@@ -722,6 +717,10 @@ main() {
       string="$2"
       shift
       ;;
+    -r | --range)
+      exportRange="$2"
+      shift
+      ;;
     *) ;;
     esac
     shift
@@ -733,12 +732,12 @@ main() {
     case $1 in
     inbox) inbox ;;
     today) today ;;
-    upcoming) upcoming ;;
-    mostCharacters) mostCharacters ;;
-    mostClosed) mostClosed ;;
-    mostCreated) mostCreated ;;
-    mostCancelled) mostCancelled ;;
-    mostTrashed) mostTrashed ;;
+    upcoming) execute "$(getUpcoming)" ;;
+    mostCharacters) execute "$(getMostCharacters)" ;;
+    mostClosed) execute "$(getMostClosed)" ;;
+    mostCreated) execute "$(getMostCreated)" ;;
+    mostCancelled) execute "$(getMostCancelled)" ;;
+    mostTrashed) execute "$(getMostTrashed)" ;;
     mostTasks) mostTasks ;;
     next) next ;;
     anytime) anytime ;;
