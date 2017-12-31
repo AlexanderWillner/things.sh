@@ -70,22 +70,24 @@ COMMAND:
   completed
   cancelled
   trashed
-  all        (show all tasks)
-  nextish    (show $limitBy next tasks that are also in someday projects)
-  old        (show $limitBy tasks ordered by '$orderBy')
-  due        (show $limitBy tasks ordered by due date)
-  waiting    (show $limitBy tasks with the tag '$waitingTag' ordered by '$orderBy')
-  repeating  (show $limitBy repeating tasks orderd by '$orderBy')
-  subtasks   (show $limitBy subtasks)
-  projects   (show $limitBy projects ordered by creation date)
-  headings   (show $limitBy headings ordered by creation date)
-  notes      (show $limitBy notes as <headings>: <notes> ordered by creation date)
-  csv        (export all tasks as semicolon seperated values incl. notes and Excel friendly)
-  stat       (provide an overview of the numbers of tasks)
-  closed     (show $limitBy days on which most tasks were closed)
-  created    (show $limitBy days on which most tasks were created)
-  search     (provide details about specific tasks)
-  feedback   (give feedback, request and propose changes)
+  all           (show all tasks)
+  nextish       (show $limitBy next tasks that are also in someday projects)
+  old           (show $limitBy tasks ordered by '$orderBy')
+  due           (show $limitBy tasks ordered by due date)
+  waiting       (show $limitBy tasks with the tag '$waitingTag' ordered by '$orderBy')
+  repeating     (show $limitBy repeating tasks orderd by '$orderBy')
+  subtasks      (show $limitBy subtasks)
+  projects      (show $limitBy projects ordered by creation date)
+  headings      (show $limitBy headings ordered by creation date)
+  notes         (show $limitBy notes as <headings>: <notes> ordered by creation date)
+  csv           (export all tasks as semicolon seperated values incl. notes and Excel friendly)
+  stat          (provide an overview of the numbers of tasks)
+  mostClosed    (show $limitBy days on which most tasks were closed)
+  mostCreated   (show $limitBy days on which most tasks were created)
+  mostCancelled (show $limitBy days on which most tasks were cancelled)
+  mostTrashed   (show $limitBy days on which most tasks were trashed)
+  search        (provide details about specific tasks)
+  feedback      (give feedback, request and propose changes)
 
 OPTIONS:
   -l|--limitBy <number>    Limit output by <number> of results
@@ -405,6 +407,7 @@ SQL
 cancelled() {
   read -rd '' query <<-SQL || true
 SELECT
+  date(TASK.stopDate,"unixepoch") AS StopDate,
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 
     WHEN PROJECT.title IS NOT NULL THEN PROJECT.title
@@ -417,7 +420,7 @@ LEFT OUTER JOIN $TASKTABLE PROJECT ON TASK.project = PROJECT.uuid
 LEFT OUTER JOIN $AREATABLE AREA ON TASK.area = AREA.uuid
 LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
 WHERE TASK.$ISNOTTRASHED AND TASK.$ISCANCELLED AND TASK.$ISTASK
-ORDER BY TASK.$orderBy;
+ORDER BY StopDate;
 SQL
   sqlite3 "$THINGSDB" "${query}"
 }
@@ -457,7 +460,31 @@ mostClosed() {
   read -rd '' query <<-SQL || true
 SELECT COUNT(title) AS TasksDone, date(stopDate,"unixepoch") AS DAY
 FROM $TASKTABLE
-WHERE DAY NOT NULL
+WHERE DAY NOT NULL AND $ISCOMPLETED
+GROUP BY DAY
+ORDER BY TasksDone DESC
+LIMIT $limitBy;
+SQL
+  sqlite3 "$THINGSDB" "${query}"
+}
+
+mostCancelled() {
+  read -rd '' query <<-SQL || true
+SELECT COUNT(title) AS TasksDone, date(stopDate,"unixepoch") AS DAY
+FROM $TASKTABLE
+WHERE DAY NOT NULL AND $ISCANCELLED
+GROUP BY DAY
+ORDER BY TasksDone DESC
+LIMIT $limitBy;
+SQL
+  sqlite3 "$THINGSDB" "${query}"
+}
+
+mostTrashed() {
+  read -rd '' query <<-SQL || true
+SELECT COUNT(title) AS TasksDone, date(userModificationDate,"unixepoch") AS DAY
+FROM $TASKTABLE
+WHERE DAY NOT NULL AND $ISTRASHED
 GROUP BY DAY
 ORDER BY TasksDone DESC
 LIMIT $limitBy;
@@ -554,8 +581,11 @@ stat() {
   echo "Oldest    : $(limitBy="1" old)"
   echo "Farest    : $(orderBy='startDate DESC' upcoming | tail -n1)"
   echo "Longest   : $(longestDescription)"
-  echo "Closed    : $(mostClosed | head -n1)"
+  echo ""
   echo "Created   : $(mostCreated | head -n1)"
+  echo "Closed    : $(mostClosed | head -n1)"
+  echo "Cancelled : $(mostCancelled | head -n1)"
+  echo "Trashed   : $(mostTrashed | head -n1)"
   echo "Days/Task : $(averageCompleteTime)"
 }
 
@@ -644,8 +674,10 @@ main() {
     inbox) inbox ;;
     today) today ;;
     upcoming) upcoming ;;
-    closed) mostClosed ;;
-    created) mostCreated ;;
+    mostClosed) mostClosed ;;
+    mostCreated) mostCreated ;;
+    mostCancelled) mostCancelled ;;
+    mostTrashed) mostTrashed ;;
     next) next ;;
     anytime) anytime ;;
     someday) someday ;;
