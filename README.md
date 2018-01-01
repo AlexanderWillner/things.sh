@@ -13,6 +13,13 @@ You can use [brew](https://brew.sh) to install and later update the script:
  - Prepare: ```brew tap AlexanderWillner/tap```
  - Install: ```brew install things.sh```
  - Upgrade: ```brew upgrade```
+ - Autocompletion: ```brew install bash-completion```. Then add to ```~/.bashrc```:
+
+```
+    if [ -f $(brew --prefix)/etc/bash_completion ]; then
+      . $(brew --prefix)/etc/bash_completion
+    fi
+```
  
 ## Example Graphs
 
