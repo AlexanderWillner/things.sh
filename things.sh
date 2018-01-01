@@ -760,6 +760,9 @@ main() {
     statcsv) limitBy="999999" statcsv ;;
     search) search ;;
     feedback) open https://github.com/AlexanderWillner/things.sh/issues/ ;;
+    #TODO: complete this (or refactor this using an array)
+    show-commands) echo "inbox today upcoming" ;;
+    show-parameters) echo "-r --range -s --string -o --orderBy -w -waitingTag -l --limitBy" ;;
     *) usage ;;
     esac
   else
