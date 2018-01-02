@@ -3,7 +3,7 @@
 myPluginID=$(getNextPluginID)
 myPlugin="plugin$myPluginID"
 myPluginCommand="someday"
-myPluginDescription="Shows $limitBy someday tasks ordered by '$orderBy'"
+myPluginDescription="Shows $LIMIT_BY someday tasks ordered by '$ORDER_BY'"
 myPluginMethod="querySomeday"
 
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
@@ -28,8 +28,8 @@ LEFT OUTER JOIN $AREATABLE AREA ON TASK.area = AREA.uuid
 LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
 WHERE TASK.$ISNOTTRASHED AND TASK.$ISTASK
 AND TASK.$ISPOSTPONED AND TASK.$ISOPEN
-ORDER BY TASK.$orderBy
-LIMIT $limitBy
+ORDER BY TASK.$ORDER_BY
+LIMIT $LIMIT_BY
 SQL
   echo "${query}"
 }

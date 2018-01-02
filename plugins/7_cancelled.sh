@@ -3,7 +3,7 @@
 myPluginID=$(getNextPluginID)
 myPlugin="plugin$myPluginID"
 myPluginCommand="cancelled"
-myPluginDescription="Shows $limitBy cancelled tasks ordered by cancel date"
+myPluginDescription="Shows $LIMIT_BY cancelled tasks ordered by cancel date"
 myPluginMethod="queryCancelled"
 
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
@@ -29,7 +29,7 @@ LEFT OUTER JOIN $AREATABLE AREA ON TASK.area = AREA.uuid
 LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
 WHERE TASK.$ISNOTTRASHED AND TASK.$ISCANCELLED AND TASK.$ISTASK
 ORDER BY StopDate
-LIMIT $limitBy
+LIMIT $LIMIT_BY
 SQL
   echo "${query}"
 }

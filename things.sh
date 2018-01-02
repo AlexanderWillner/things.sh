@@ -61,11 +61,11 @@ readonly ISHEADING="type = 2"
 ###############################################################################
 
 # Use defined parameters ######################################################
-export limitBy="20"
-export waitingTag="Waiting for"
-export orderBy="creationDate"
-export exportRange="-1 year"
-export string=""
+export LIMIT_BY="20"
+export WAITING_TAG="Waiting for"
+export ORDER_BY="creationDate"
+export EXPORT_RANGE="-1 year"
+export SEARCH_STRING=""
 ###############################################################################
 
 # Define methods ##############################################################
@@ -102,23 +102,23 @@ parse() {
     local key="$1"
     case $key in
     -l | --limitBy)
-      limitBy="$2"
+      LIMIT_BY="$2"
       shift
       ;;
     -w | --waitingTag)
-      waitingTag="$2"
+      WAITING_TAG="$2"
       shift
       ;;
     -o | --orderBy)
-      orderBy="$2"
+      ORDER_BY="$2"
       shift
       ;;
     -s | --string)
-      string="$2"
+      SEARCH_STRING="$2"
       shift
       ;;
     -r | --range)
-      exportRange="$2"
+      EXPORT_RANGE="$2"
       shift
       ;;
     *) ;;

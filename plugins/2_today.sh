@@ -3,7 +3,7 @@
 myPluginID=$(getNextPluginID)
 myPlugin="plugin$myPluginID"
 myPluginCommand='today'
-myPluginDescription="Shows $limitBy todays tasks ordered by index"
+myPluginDescription="Shows $LIMIT_BY todays tasks ordered by index"
 myPluginMethod='queryToday'
 
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
@@ -30,7 +30,7 @@ WHERE TASK.$ISNOTTRASHED AND TASK.$ISOPEN AND TASK.$ISTASK
 AND TASK.$ISSTARTED
 AND TASK.startdate is NOT NULL
 ORDER BY TASK.startdate, TASK.todayIndex
-LIMIT $limitBy
+LIMIT $LIMIT_BY
 SQL
   echo "${query}"
 }

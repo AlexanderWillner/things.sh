@@ -9,7 +9,7 @@ myPluginMethod="queryStatistics"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
 queryStatistics() {
-  limitBy=999999
+  export LIMIT_BY=999999
   echo "Inbox     : $(queryInbox | wc -l)"
   echo "Today     : $(queryToday | wc -l)"
   echo "Upcoming  : $(queryUpcoming | wc -l)"
@@ -28,15 +28,15 @@ queryStatistics() {
   echo "Nextish   : $(queryNextish | wc -l)"
   echo "Headings  : $(queryHeadings | wc -l)"
   echo ""
-  echo "Oldest    : $(limitBy="1" queryOld)"
+  echo "Oldest    : $(LIMIT_BY="1" queryOld)"
   echo "Farest    : $(queryUpcoming | tail -n1)"
-  echo "Longest   : $(limitBy="1" queryMostCharacters)"
-  echo "Largest   : $(limitBy="1" queryMostTasks)"
+  echo "Longest   : $(LIMIT_BY="1" queryMostCharacters)"
+  echo "Largest   : $(LIMIT_BY="1" queryMostTasks)"
   echo ""
-  echo "Created   : $(limitBy=1 queryMostCreated)"
-  echo "Closed    : $(limitBy=1 queryMostClosed)"
-  echo "Cancelled : $(limitBy=1 queryMostCancelled)"
-  echo "Trashed   : $(limitBy=1 queryMostTrashed)"
+  echo "Created   : $(LIMIT_BY=1 queryMostCreated)"
+  echo "Closed    : $(LIMIT_BY=1 queryMostClosed)"
+  echo "Cancelled : $(LIMIT_BY=1 queryMostCancelled)"
+  echo "Trashed   : $(LIMIT_BY=1 queryMostTrashed)"
   echo "Days/Task : $(queryAverageCompleteTime)"
 }
 

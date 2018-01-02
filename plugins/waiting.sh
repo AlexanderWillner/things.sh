@@ -3,7 +3,7 @@
 myPluginID=$(getNextPluginID)
 myPlugin="plugin$myPluginID"
 myPluginCommand="waiting"
-myPluginDescription="Shows $limitBy tasks with the tag '$waitingTag' ordered by '$orderBy'"
+myPluginDescription="Shows $LIMIT_BY tasks with the tag '$WAITING_TAG' ordered by '$ORDER_BY'"
 myPluginMethod="queryWaiting"
 
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
@@ -28,9 +28,9 @@ LEFT OUTER JOIN $TASKTABLE PROJECT ON TASK.project = PROJECT.uuid
 LEFT OUTER JOIN $AREATABLE AREA ON TASK.area = AREA.uuid
 LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
 WHERE TASK.$ISNOTTRASHED AND TASK.$ISOPEN
-AND TAGS.tags=(SELECT uuid FROM $TAGTABLE WHERE title='$waitingTag')
-ORDER BY TASK.$orderBy
-LIMIT $limitBy
+AND TAGS.tags=(SELECT uuid FROM $TAGTABLE WHERE title='$WAITING_TAG')
+ORDER BY TASK.$ORDER_BY
+LIMIT $LIMIT_BY
 SQL
   echo "${query}"
 }

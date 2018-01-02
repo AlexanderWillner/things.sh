@@ -9,7 +9,7 @@ myPluginMethod="querySearch"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
 querySearch() {
-  [[ -z "${string:-}" ]] && echo 2>&1 "ERROR: Use '-s' to set search string first" && exit 1
+  [[ -z "${SEARCH_STRING:-}" ]] && echo 2>&1 "ERROR: Use '-s' to set search string first" && exit 1
   sqlite3 "$THINGSDB" "$(getSearchQuery1)"
   sqlite3 "$THINGSDB" "$(getSearchQuery2)"
 }
@@ -29,7 +29,8 @@ FROM $TASKTABLE T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.project = T2.uuid
 LEFT OUTER JOIN $AREATABLE T3 ON T1.area = T3.uuid
 WHERE T1.$ISNOTTRASHED AND T1.$ISTASK
-AND (T1.title LIKE "%$string%" OR T2.title LIKE "%$string%");
+AND (T1.title LIKE "%$SEARCH_STRING%" OR T2.title LIKE "%$SEARCH_STRING%")
+LIMIT $LIMIT_BY
 SQL
   echo "${query}"
 }
@@ -45,7 +46,8 @@ SELECT
 FROM TMChecklistItem T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.task = T2.uuid
 WHERE T2.$ISNOTTRASHED
-AND T1.title LIKE "%$string%";
+AND T1.title LIKE "%$SEARCH_STRING%"
+LIMIT $LIMIT_BY
 SQL
   echo "${query}"
 }

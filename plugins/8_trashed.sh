@@ -3,7 +3,7 @@
 myPluginID=$(getNextPluginID)
 myPlugin="plugin$myPluginID"
 myPluginCommand="trashed"
-myPluginDescription="Shows $limitBy trashed tasks ordered by '$orderBy'"
+myPluginDescription="Shows $LIMIT_BY trashed tasks ordered by '$ORDER_BY'"
 myPluginMethod="queryTrashed"
 
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
@@ -17,8 +17,8 @@ getTrashedQuery() {
 SELECT title
 FROM $TASKTABLE TASK
 WHERE $ISTRASHED AND $ISTASK
-ORDER BY $orderBy
-LIMIT $limitBy
+ORDER BY $ORDER_BY
+LIMIT $LIMIT_BY
 SQL
   echo "${query}"
 }

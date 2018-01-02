@@ -3,7 +3,7 @@
 myPluginID=$(getNextPluginID)
 myPlugin="plugin$myPluginID"
 myPluginCommand="repeating"
-myPluginDescription="Shows $limitBy repeating tasks ordered by '$orderBy'"
+myPluginDescription="Shows $LIMIT_BY repeating tasks ordered by '$ORDER_BY'"
 myPluginMethod="queryRepeating"
 
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
@@ -18,8 +18,8 @@ SELECT title
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISOPEN AND $ISPOSTPONED
 AND recurrenceRule NOT NULL
-ORDER BY $orderBy
-LIMIT $limitBy
+ORDER BY $ORDER_BY
+LIMIT $LIMIT_BY
 SQL
   echo "${query}"
 }

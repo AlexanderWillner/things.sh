@@ -3,7 +3,7 @@
 myPluginID=$(getNextPluginID)
 myPlugin="plugin$myPluginID"
 myPluginCommand='next'
-myPluginDescription="Shows $limitBy next tasks ordered by '$orderBy'"
+myPluginDescription="Shows $LIMIT_BY next tasks ordered by '$ORDER_BY'"
 myPluginMethod='queryNext'
 
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"

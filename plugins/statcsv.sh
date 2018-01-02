@@ -3,13 +3,12 @@
 myPluginID=$(getNextPluginID)
 myPlugin="plugin$myPluginID"
 myPluginCommand="statcsv"
-myPluginDescription="Exports some statistics as semicolon separated values for $exportRange"
+myPluginDescription="Exports some statistics as semicolon separated values for $EXPORT_RANGE"
 myPluginMethod="queryStatCSV"
 
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
 queryStatCSV() {
-  limitBy=999999
   echo '"Date";"Created";"Closed";"Cancelled";"Trashed"'
   sqlite3 -csv -separator ';' "$THINGSDB" "$(getStatCSVQuery)"
 }
@@ -21,11 +20,11 @@ WITH RECURSIVE
      SELECT 0
      UNION ALL
      SELECT x+1 FROM timeseries
-      LIMIT (SELECT ((julianday('now') - julianday('now', '$exportRange'))) + 1)
+      LIMIT (SELECT ((julianday('now') - julianday('now', '$EXPORT_RANGE'))) + 1)
   )
 
 SELECT 
-  date(julianday('now', '$exportRange'), '+' || x || ' days') as date,
+  date(julianday('now', '$EXPORT_RANGE'), '+' || x || ' days') as date,
   CREATED.TasksCreated,
   CLOSED.TasksDone,
   CANCELLED.TasksDone,

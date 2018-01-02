@@ -23,6 +23,7 @@ feedback:
 test: check
 	@echo "Running shell checks..."
 	@shellcheck -x *.sh
+	@shellcheck -x plugins/*.sh
 	@echo "Running unit tests..."
 	@bashcov -s shunit2 test/thingsTest.sh
 	@file coverage/index.html||true

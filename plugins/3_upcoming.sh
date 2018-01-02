@@ -3,7 +3,7 @@
 myPluginID=$(getNextPluginID)
 myPlugin="plugin$myPluginID"
 myPluginCommand='upcoming'
-myPluginDescription="Shows $limitBy upcoming tasks ordered by date"
+myPluginDescription="Shows $LIMIT_BY upcoming tasks ordered by date"
 myPluginMethod='queryUpcoming'
 
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
@@ -33,7 +33,7 @@ LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
 WHERE TASK.$ISNOTTRASHED AND TASK.$ISOPEN AND TASK.$ISTASK
 AND TASK.$ISPOSTPONED AND (TASK.startDate NOT NULL OR TASK.recurrenceRule NOT NULL)
 ORDER BY TASK.startdate, TASK.todayIndex
-LIMIT $limitBy
+LIMIT $LIMIT_BY
 SQL
   echo "${query}"
 }

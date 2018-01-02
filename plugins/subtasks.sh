@@ -3,7 +3,7 @@
 myPluginID=$(getNextPluginID)
 myPlugin="plugin$myPluginID"
 myPluginCommand="subtasks"
-myPluginDescription="Shows $limitBy subtasks ordered by '$orderBy'"
+myPluginDescription="Shows $LIMIT_BY subtasks ordered by '$ORDER_BY'"
 myPluginMethod="querySubtasks"
 
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
@@ -20,8 +20,8 @@ SELECT
 FROM TMChecklistItem CHECKLIST
 LEFT OUTER JOIN $TASKTABLE TASK ON CHECKLIST.task = TASK.uuid
 WHERE TASK.$ISOPEN AND TASK.$ISNOTTRASHED
-ORDER BY CHECKLIST.$orderBy
-LIMIT $limitBy
+ORDER BY CHECKLIST.$ORDER_BY
+LIMIT $LIMIT_BY
 SQL
   echo "${query}"
 }

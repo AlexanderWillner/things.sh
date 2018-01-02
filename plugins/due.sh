@@ -3,7 +3,7 @@
 myPluginID=$(getNextPluginID)
 myPlugin="plugin$myPluginID"
 myPluginCommand='due'
-myPluginDescription="Shows $limitBy tasks ordered by due date"
+myPluginDescription="Shows $LIMIT_BY tasks ordered by due date"
 myPluginMethod='queryDue'
 
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
@@ -30,7 +30,7 @@ LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
 WHERE TASK.$ISNOTTRASHED AND TASK.$ISOPEN
 AND TASK.dueDate NOT NULL
 ORDER BY TASK.dueDate
-LIMIT $limitBy
+LIMIT $LIMIT_BY
 SQL
   echo "${query}"
 }

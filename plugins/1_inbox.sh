@@ -3,7 +3,7 @@
 myPluginID=$(getNextPluginID)
 myPlugin="plugin$myPluginID"
 myPluginCommand='inbox'
-myPluginDescription="Shows $limitBy inbox tasks ordered by '$orderBy'"
+myPluginDescription="Shows $LIMIT_BY inbox tasks ordered by '$ORDER_BY'"
 myPluginMethod='queryInbox'
 
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
@@ -17,8 +17,8 @@ getInboxQuery() {
 SELECT title
 FROM $TASKTABLE TASK
 WHERE $ISNOTTRASHED AND $ISTASK AND $ISNOTSTARTED AND $ISOPEN
-ORDER BY TASK.$orderBy
-LIMIT $limitBy
+ORDER BY TASK.$ORDER_BY
+LIMIT $LIMIT_BY
 SQL
   echo "${query}"
 }
