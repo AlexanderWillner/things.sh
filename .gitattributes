@@ -1,0 +1,5 @@
+/.travis.yml export-ignore
+/.gitignore export-ignore
+/.gitattributes export-ignore
+/img export-ignore
+
