@@ -18,7 +18,9 @@ getPluginHelp() {
     method="plugin$idx[2]"
     cmd=${!command}
     line='                       '
-    printf "  %s %s ${!description}\\n" "$cmd" "${line:${#cmd}}"
+    if [[ ! -z "${!description}" ]]; then
+      printf "  %s %s ${!description}\\n" "$cmd" "${line:${#cmd}}"
+    fi
     idx=$((idx + 1))
     plugin="plugin$idx"
   done

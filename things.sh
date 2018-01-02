@@ -131,11 +131,11 @@ parse() {
   local command=${1:-}
 
   if [[ -n ${command} ]]; then
-    case ${1} in
-    show-commands) getCommands ;;
-    show-options) echo "-r --range -s --string -o --orderBy -w -waitingTag -l --limitBy" ;;
-    *) if hasPlugin "${1}"; then invokePlugin "${1}"; else usage; fi ;;
-    esac
+    if hasPlugin "${1}"; then 
+      invokePlugin "${1}"
+    else
+      usage
+    fi
   else
     usage
   fi
