@@ -13,7 +13,7 @@ queryNext() {
 }
 
 getNextQuery() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 SELECT
   CASE 
     WHEN AREA.title IS NOT NULL THEN AREA.title 

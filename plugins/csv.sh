@@ -15,7 +15,7 @@ exportCSV() {
 }
 
 getCSVQuery1() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 SELECT 
   T1.title, 
   date(T1.creationDate,"unixepoch"),
@@ -37,7 +37,7 @@ SQL
 }
 
 getCSVQuery2() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 SELECT 
   T2.title,
   date(T1.creationDate,"unixepoch"),

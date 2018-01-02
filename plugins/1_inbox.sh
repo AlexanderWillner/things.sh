@@ -13,7 +13,7 @@ queryInbox() {
 }
 
 getInboxQuery() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 SELECT title
 FROM $TASKTABLE TASK
 WHERE $ISNOTTRASHED AND $ISTASK AND $ISNOTSTARTED AND $ISOPEN

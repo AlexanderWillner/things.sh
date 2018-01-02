@@ -30,7 +30,8 @@ test: check
 
 style:
 	@type shfmt >/dev/null 2>&1 || (echo "Run 'go get -u mvdan.cc/sh/cmd/shfmt' first." >&2 ; exit 1)
-	@shfmt -i 2 -w *.sh
+	@shfmt -i 2 -w -s *.sh
+	@shfmt -i 2 -w -s plugins/*.sh
 
 check:
 	@type shellcheck >/dev/null 2>&1 || (echo "Run 'brew install shellcheck' first." >&2 ; exit 1)

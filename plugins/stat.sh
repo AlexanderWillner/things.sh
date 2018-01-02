@@ -45,7 +45,7 @@ queryAverageCompleteTime() {
 }
 
 getAverageCompleteTimeQuery() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 SELECT ROUND(AVG(JULIANDAY(stopDate,"unixepoch")-JULIANDAY(creationDate,"unixepoch")))
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISTASK

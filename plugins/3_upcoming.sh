@@ -13,7 +13,7 @@ queryUpcoming() {
 }
 
 getUpcomingQuery() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 SELECT 
   CASE 
     WHEN TASK.startDate IS NULL THEN "0000-00-00" 

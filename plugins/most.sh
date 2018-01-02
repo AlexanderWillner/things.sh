@@ -90,7 +90,6 @@ SQL
   echo "${query}"
 }
 
-
 getMostClosed() {
   read -rd '' query <<-SQL || true
 SELECT COUNT(title) AS TasksDone, date(stopDate,"unixepoch") AS DAY

@@ -13,7 +13,7 @@ queryTrashed() {
 }
 
 getTrashedQuery() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 SELECT title
 FROM $TASKTABLE TASK
 WHERE $ISTRASHED AND $ISTASK

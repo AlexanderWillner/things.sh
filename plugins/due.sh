@@ -13,7 +13,7 @@ queryDue() {
 }
 
 getDueQuery() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 SELECT
   date(TASK.dueDate,"unixepoch"),
   CASE 

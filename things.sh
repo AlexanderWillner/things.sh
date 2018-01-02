@@ -167,7 +167,7 @@ cleanup() {
   local linecallfunc=$3
   local command="$4"
   local funcstack="$5"
-  if [[ "$err" -ne "0" ]]; then
+  if [[ $err -ne "0" ]]; then
     echo 2>&1 "ERROR: line $line - command '$command' exited with status: $err."
     if [ "$funcstack" != "::" ]; then
       echo 2>&1 "Error at ${funcstack}."
@@ -180,5 +180,5 @@ cleanup() {
 ###############################################################################
 
 # Run script ##################################################################
-[[ "${BASH_SOURCE[0]}" == "${0}" ]] && trap 'cleanup $? $LINENO $BASH_LINENO "$BASH_COMMAND" $(printf "::%s" ${FUNCNAME[@]})' EXIT && main "$@"
+[[ ${BASH_SOURCE[0]} == "${0}" ]] && trap 'cleanup $? $LINENO $BASH_LINENO "$BASH_COMMAND" $(printf "::%s" ${FUNCNAME[@]})' EXIT && main "$@"
 ###############################################################################

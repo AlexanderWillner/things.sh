@@ -13,7 +13,7 @@ queryOld() {
 }
 
 getOldQuery() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 SELECT
   date(TASK.creationDate,"unixepoch"),
   CASE 

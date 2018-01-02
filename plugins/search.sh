@@ -9,13 +9,13 @@ myPluginMethod="querySearch"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
 querySearch() {
-  [[ -z "${SEARCH_STRING:-}" ]] && echo 2>&1 "ERROR: Use '-s' to set search string first" && exit 1
+  [[ -z ${SEARCH_STRING:-} ]] && echo 2>&1 "ERROR: Use '-s' to set search string first" && exit 1
   sqlite3 "$THINGSDB" "$(getSearchQuery1)"
   sqlite3 "$THINGSDB" "$(getSearchQuery2)"
 }
 
 getSearchQuery1() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 SELECT 
   T1.title as "Title", 
   date(T1.creationDate,"unixepoch") as "Created",
@@ -36,7 +36,7 @@ SQL
 }
 
 getSearchQuery2() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 SELECT 
   T2.title as "Title",
   date(T1.creationDate,"unixepoch") as "Created",
@@ -51,4 +51,3 @@ LIMIT $LIMIT_BY
 SQL
   echo "${query}"
 }
-

@@ -13,7 +13,7 @@ queryRepeating() {
 }
 
 getRepeatingQuery() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 SELECT title
 FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISOPEN AND $ISPOSTPONED

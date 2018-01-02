@@ -13,7 +13,7 @@ queryCancelled() {
 }
 
 getCancelledQuery() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 SELECT
   date(TASK.stopDate,"unixepoch") AS StopDate,
   CASE 

@@ -14,7 +14,7 @@ queryStatCSV() {
 }
 
 getStatCSVQuery() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 WITH RECURSIVE
   timeseries(x) AS (
      SELECT 0

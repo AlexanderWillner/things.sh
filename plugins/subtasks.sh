@@ -13,7 +13,7 @@ querySubtasks() {
 }
 
 getSubtasksQuery() {
-    read -rd '' query <<-SQL || true
+  read -rd '' query <<-SQL || true
 SELECT 
   TASK.title,
   CHECKLIST.title
