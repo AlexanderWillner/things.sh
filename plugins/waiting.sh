@@ -3,7 +3,7 @@
 myPluginID=$(getNextPluginID)
 myPlugin="plugin$myPluginID"
 myPluginCommand="waiting"
-myPluginDescription="Shows $LIMIT_BY tasks with the tag '$WAITING_TAG' ordered by '$ORDER_BY'"
+myPluginDescription="Shows $LIMIT_BY tasks with the tag \"$WAITING_TAG\" ordered by \"$ORDER_BY\""
 myPluginMethod="queryWaiting"
 
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
