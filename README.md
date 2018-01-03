@@ -23,7 +23,7 @@ You can use [brew](https://brew.sh) to install and later update the script:
  
 ## Example Graphs
 
-These graphs have been generated based on the CSV export.
+These graphs have been generated based on the CSV export. For example: ```things.sh -r '-14 days' statcsv > lastTwoWeeks.csv && open lastTwoWeeks.csv``` (and then generating a ```Stacked Column``` graph).
 
 ![Tasks in the last 14 days](img/example3.jpg)
 
