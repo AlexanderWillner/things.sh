@@ -9,7 +9,7 @@ myPluginMethod="queryStatistics"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
 queryStatistics() {
-  export LIMIT_BY=999999
+  export LIMIT_BY=-1
   echo "Inbox     : $(queryInbox | wc -l)"
   echo "Today     : $(queryToday | wc -l)"
   echo "Upcoming  : $(queryUpcoming | wc -l)"
