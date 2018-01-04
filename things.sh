@@ -61,7 +61,7 @@ readonly ISHEADING="type = 2"
 ###############################################################################
 
 # Use defined parameters ######################################################
-export LIMIT_BY="20"
+export LIMIT_BY="all"
 export WAITING_TAG="Waiting for"
 export ORDER_BY="creationDate"
 export EXPORT_RANGE="-1 year"
@@ -127,7 +127,8 @@ parse() {
   done
 
   load_plugins
-
+  export LIMIT_BY="-1"
+  
   local command=${1:-}
 
   if [[ -n ${command} ]]; then
@@ -158,11 +159,11 @@ EOF
 }
 
 cleanup() {
-  local err="${1}"
-  local line="${2}"
-  local linecallfunc="${3}"
-  local command="${4}"
-  local funcstack="${5}"
+  local err="${1:-}"
+  local line="${2:-}"
+  local linecallfunc="${3:-}"
+  local command="${4:-}"
+  local funcstack="${5:-}"
   if [[ ${err} -ne "0" ]]; then
     echo 2>&1 "ERROR: line ${line} - command '${command}' exited with status: ${err}."
     if [ "${funcstack}" != "::" ]; then

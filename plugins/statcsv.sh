@@ -20,11 +20,11 @@ WITH RECURSIVE
      SELECT 0
      UNION ALL
      SELECT x+1 FROM timeseries
-      LIMIT (SELECT ((julianday('now') - julianday('now', '$EXPORT_RANGE'))) + 1)
+      LIMIT (SELECT ((julianday("now") - julianday("now", "$EXPORT_RANGE"))) + 1)
   )
 
 SELECT 
-  date(julianday('now', '$EXPORT_RANGE'), '+' || x || ' days') as date,
+  date(julianday("now", "$EXPORT_RANGE"), "+" || x || " days") as date,
   CREATED.TasksCreated,
   CLOSED.TasksDone,
   CANCELLED.TasksDone,
