@@ -166,16 +166,12 @@ cleanup() {
   local funcstack="${5:-}"
   if [[ ${err} -ne "0" ]]; then
     echo 2>&1 "ERROR: line ${line} - command '${command}' exited with status: ${err}."
-    if [ "${funcstack}" != "::" ]; then
-      echo 2>&1 "Error at ${funcstack}."
-      [ "${linecallfunc}" != "" ] && echo 2>&1 "Called at line ${linecallfunc}."
-    else
-      echo 2>&1 "Internal debug info from function ${FUNCNAME[0]} (line ${linecallfunc})."
-    fi
+    echo 2>&1 "ERROR: In ${funcstack} called at line ${linecallfunc}."
+    echo 2>&1 "DEBUG: From function ${funcstack[0]} (line ${linecallfunc})."
   fi
 }
 ###############################################################################
 
 # Run script ##################################################################
-[[ ${BASH_SOURCE[0]} == "${0}" ]] && trap 'cleanup "${?}" "${LINENO}" "${BASH_LINENO}" "${BASH_COMMAND}" $(printf "::%s" ${FUNCNAME[@]})' EXIT && main "${@}"
+[[ ${BASH_SOURCE[0]} == "${0}" ]] && trap 'cleanup "${?}" "${LINENO}" "${BASH_LINENO}" "${BASH_COMMAND}" $(printf "::%s" ${FUNCNAME[@]:-})' EXIT && main "${@}"
 ###############################################################################
