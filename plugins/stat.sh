@@ -32,6 +32,7 @@ queryStatistics() {
   echo "Farest    : $(queryUpcoming | tail -n1)"
   echo "Longest   : $(LIMIT_BY="1" queryMostCharacters)"
   echo "Largest   : $(LIMIT_BY="1" queryMostTasks)"
+  echo "Tag       : $(LIMIT_BY="1" queryTags)"
   echo ""
   echo "Created   : $(LIMIT_BY=1 queryMostCreated)"
   echo "Closed    : $(LIMIT_BY=1 queryMostClosed)"

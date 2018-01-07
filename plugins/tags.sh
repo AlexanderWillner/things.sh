@@ -24,7 +24,6 @@ queryTags() {
 getTagsQuery() {
   read -rd '' query <<-SQL || true
 SELECT 
-  TAGS.title,
   (SELECT 
      COUNT(*) 
    FROM 
@@ -37,7 +36,8 @@ SELECT
      FROM $TASKTABLE TASK
      WHERE TASK.$ISNOTTRASHED AND TASK.$ISOPEN AND (TASK.$ISTASK OR TASK.$ISPROJECT)
      )
-   ) AS quantity
+   ) AS quantity,
+   TAGS.title
 FROM $TAGTABLE TAGS
 ORDER BY quantity DESC
 LIMIT $LIMIT_BY
