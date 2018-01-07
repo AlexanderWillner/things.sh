@@ -127,7 +127,7 @@ parse() {
   done
 
   load_plugins
-  export LIMIT_BY="-1"
+  [[ "${LIMIT_BY}" == "all" ]] && export LIMIT_BY="-1"
   
   local command=${1:-}
 
@@ -148,7 +148,7 @@ usage: ${PROGNAME} <OPTIONS> [COMMAND]
 
 OPTIONS:
   -l|--limitBy <number>    Limit output by <number> of results
-  -w|--waitingTag <tag>    Set waiting tag to <tag>
+  -w|--waitingTag <tag>    Set waiting/filter tag to <tag>
   -o|--orderBy <column>    Sort output by <column> (e.g. 'userModificationDate' or 'creationDate')
   -s|--string <string>     String <string> to search for
   -r|--range <string>      Limit CSV statistic export by <string>
