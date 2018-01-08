@@ -24,7 +24,8 @@ SELECT
   date(T1.startDate,"unixepoch") as "Start",
   date(T1.stopDate,"unixepoch") as "Stopped",
   T2.title as "Project",
-  T3.title as "Area"
+  T3.title as "Area",
+  'thingstodo:show?uuid='||T1.uuid
 FROM $TASKTABLE T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.project = T2.uuid
 LEFT OUTER JOIN $AREATABLE T3 ON T1.area = T3.uuid

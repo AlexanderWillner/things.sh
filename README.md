@@ -117,6 +117,11 @@ Trashed   : 109|2017-08-02
 Days/Task : 41.0
 ```
 
+## Things URL Helper
+
+The application ```ThingsURLHelper.app``` opens URLs of the form ```thingstodo:show?uuid=XXX``` with XXX being the ```UUID``` of a todo.
+By using ```things.sh search``` you can identify the ```UUID``` of a task.
+
 ## CREDITS
  * Author        : Arjan van der Gaag (script for Things 2)
  * Author        : Alexander Willner (updates for Things 3, complete rewrite)
