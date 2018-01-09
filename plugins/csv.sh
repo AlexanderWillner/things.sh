@@ -9,7 +9,7 @@ myPluginMethod="exportCSV"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
 exportCSV() {
-  echo 'Title;"Creation Date";"Modification Date";"Due Date";"Start Date";"Completion Date";"Recurring";Project;Area;Subtask;Notes'
+  echo 'Title;"URI";"Creation Date";"Modification Date";"Due Date";"Start Date";"Completion Date";"Recurring";Project;Area;Subtask;Notes'
   sqlite3 -list -separator ';' "$THINGSDB" "$(getCSVQuery1)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT || true
   sqlite3 -list -separator ';' "$THINGSDB" "$(getCSVQuery2)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT || true
 }
@@ -18,6 +18,7 @@ getCSVQuery1() {
   read -rd '' query <<-SQL || true
 SELECT 
   T1.title, 
+  'thingstodo:show?uuid='||T1.uuid,
   date(T1.creationDate,"unixepoch"),
   date(T1.userModificationDate,"unixepoch"),
   date(T1.dueDate,"unixepoch"),
@@ -40,6 +41,7 @@ getCSVQuery2() {
   read -rd '' query <<-SQL || true
 SELECT 
   T2.title,
+  'thingstodo:show?uuid='||T2.uuid,
   date(T1.creationDate,"unixepoch"),
   date(T1.userModificationDate,"unixepoch"),
   "",
