@@ -9,7 +9,7 @@ myPluginMethod="exportCSV"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
 exportCSV() {
-  echo 'Title;"URI";"Creation Date";"Modification Date";"Due Date";"Start Date";"Completion Date";"Recurring";Project;Area;Subtask;Notes'
+  echo '"Title";"Type";"URI";"Creation Date";"Modification Date";"Due Date";"Start Date";"Completion Date";"Recurring";"Project";"Area";"Subtask";"Notes"'
   sqlite3 -list -separator ';' "$THINGSDB" "$(getCSVQuery1)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT || true
   sqlite3 -list -separator ';' "$THINGSDB" "$(getCSVQuery2)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT || true
 }
@@ -17,8 +17,9 @@ exportCSV() {
 getCSVQuery1() {
   read -rd '' query <<-SQL || true
 SELECT 
-  T1.title, 
-  'thingstodo:show?uuid='||T1.uuid,
+  T1.title,
+  T1.type, 
+  'thingstodo://show?uuid='||T1.uuid,
   date(T1.creationDate,"unixepoch"),
   date(T1.userModificationDate,"unixepoch"),
   date(T1.dueDate,"unixepoch"),
@@ -32,7 +33,7 @@ SELECT
 FROM $TASKTABLE T1
 LEFT OUTER JOIN $TASKTABLE PROJECT ON T1.project = PROJECT.uuid
 LEFT OUTER JOIN $AREATABLE AREA ON T1.area = AREA.uuid
-WHERE T1.$ISNOTTRASHED AND (T1.$ISOPEN OR T1.$ISCOMPLETED) AND T1.$ISTASK;
+WHERE T1.$ISNOTTRASHED AND (T1.$ISOPEN OR T1.$ISCOMPLETED);
 SQL
   echo "${query}"
 }
@@ -41,7 +42,8 @@ getCSVQuery2() {
   read -rd '' query <<-SQL || true
 SELECT 
   T2.title,
-  'thingstodo:show?uuid='||T2.uuid,
+  T2.type,
+  'thingstodo://show?uuid='||T2.uuid,
   date(T1.creationDate,"unixepoch"),
   date(T1.userModificationDate,"unixepoch"),
   "",
@@ -58,3 +60,4 @@ WHERE (T2.$ISOPEN OR T2.$ISCOMPLETED) AND T2.$ISNOTTRASHED;
 SQL
   echo "${query}"
 }
+

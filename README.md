@@ -119,7 +119,7 @@ Days/Task : 41.0
 
 ## Things URL Helper
 
-The application ```ThingsURLHelper.app``` opens URLs of the form ```thingstodo:show?uuid=XXX``` with XXX being the ```UUID``` of a todo.
+The application ```ThingsURLHelper.app``` opens URLs of the form ```thingstodo://show?uuid=XXX``` with XXX being the ```UUID``` of a todo.
 By using ```things.sh csv``` you can identify the according URL of each task and open it via spotlight for example.
 
 ## CREDITS
