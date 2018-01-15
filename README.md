@@ -117,10 +117,16 @@ Trashed   : 109|2017-08-02
 Days/Task : 41.0
 ```
 
-## Things URL Helper
+## Other Information
+
+### Things URL Helper
 
 The application ```ThingsURLHelper.app``` opens URLs of the form ```thingstodo://show?uuid=XXX``` with XXX being the ```UUID``` of a todo.
 By using ```things.sh csv``` you can identify the according URL of each task and open it via spotlight for example.
+
+### Markdown to Things Helper
+
+You can use the workflows ```Markdown Clipboard to Things.alfredworkflow``` (Alfred) and ```Markdown Text to Things.workflow``` (macOS Service) to automatically convert Markdown todos (```- [ ] ```) into Things3 tasks.
 
 ## CREDITS
  * Author        : Arjan van der Gaag (script for Things 2)
