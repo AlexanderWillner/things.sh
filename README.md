@@ -124,9 +124,11 @@ Days/Task : 41.0
 The application ```ThingsURLHelper.app``` opens URLs of the form ```thingstodo://show?uuid=XXX``` with XXX being the ```UUID``` of a todo.
 By using ```things.sh csv``` you can identify the according URL of each task and open it via spotlight for example.
 
-### Markdown to Things Helper
+### Markdown Clipboard to Things Workflow
 
-You can use the workflows ```Markdown Clipboard to Things.alfredworkflow``` (Alfred) and ```Markdown Text to Things.workflow``` (macOS Service) to automatically convert Markdown todos (```- [ ] ```) into Things3 tasks.
+[![Demo Markdown Clipbaord to Things3](https://j.gifs.com/gL8kx9.gif)](https://youtu.be/HTaxOkZb9S4)
+
+You can use the [macOS](https://support.apple.com/kb/PH25241) and [Alfred](https://www.alfredapp.com/blog/tips-and-tricks/tutorial-importing-and-setting-up-alfred-workflows/) workflows in the folder ```resources``` to automatically convert MarkDown todos into Things3 tasks. Above an example using Bear.app.
 
 ## CREDITS
  * Author        : Arjan van der Gaag (script for Things 2)
