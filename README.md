@@ -121,8 +121,10 @@ Days/Task : 41.0
 
 ### Things URL Helper
 
+[![Things3 URL Helper](https://j.gifs.com/59VllB.gif)](https://youtu.be/6niSmdXanug)
+
 The application ```ThingsURLHelper.app``` in the folder ```resources``` opens URLs of the form ```thingstodo://show?uuid=XXX``` with XXX being the ```UUID``` of a todo.
-By using ```things.sh csv``` you can identify the according URL of each task and open it via spotlight for example.
+By using ```things.sh csv``` you can identify the according URL of each task and open it within any macOS application, such as spotlight. Above an example using a local web page.
 
 ### Markdown Clipboard to Things Workflow
 
