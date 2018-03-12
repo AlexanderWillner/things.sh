@@ -66,6 +66,7 @@ export WAITING_TAG="Waiting for"
 export ORDER_BY="creationDate"
 export EXPORT_RANGE="-1 year"
 export SEARCH_STRING=""
+export EXPORT_EVENTLIST="$HOME/.trip.thingslist"
 ###############################################################################
 
 # Define methods ##############################################################
@@ -121,6 +122,10 @@ parse() {
       EXPORT_RANGE="${2}"
       shift
       ;;
+    -e | --event)
+      EXPORT_EVENTLIST="${2}"
+      shift
+      ;;
     *) ;;
     esac
     shift
@@ -152,6 +157,7 @@ OPTIONS:
   -o|--orderBy <column>    Sort output by <column> (e.g. 'userModificationDate' or 'creationDate')
   -s|--string <string>     String <string> to search for
   -r|--range <string>      Limit CSV statistic export by <string>
+  -e|--event <filename>    Filename <filename> that contains a list of events
   
 COMMANDS:
 EOF
