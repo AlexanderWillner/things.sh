@@ -1,9 +1,9 @@
-S;+0d;Project;TestTitle
-S;-3d;Task;Task 1
-S;-2d;Task;Task 2
+S;-3d;Project;Business Trip X
+S;-3d;Task;Preparation Task 1
+S;-2d;Task;Preparation Task 2
 S;+0d;Task;Task 3
 S;+1d;Task;Task 4
 S;+1d;Task;Task 5
 E;+1d;Task;Task 6
-E;+30d;Task;Task 7
+E;+30d;Task;Followup Task 7
 

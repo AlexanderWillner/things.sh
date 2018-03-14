@@ -31,16 +31,16 @@ scheduleEvent() {
 
     title=$(python -c 'import urllib, sys; print urllib.quote(sys.argv[1])' "${array[3]}")
 
+    if [[ ${position} == "E" ]]; then
+      startDate=$(date -j -f '%Y-%m-%d' -v"${addition}" -v"+${eventDays}d" "${eventStart}" +%Y-%m-%d)
+    else
+      startDate=$(date -j -f '%Y-%m-%d' -v"${addition}" "${eventStart}" +%Y-%m-%d)
+    fi
     if [[ ${type} == "Project" ]]; then
-      open "things:///add-project?title=${title}"
+      open "things:///add-project?title=${title}&when=${startDate}"
       project="${title}"
     fi
     if [[ ${type} == "Task" ]]; then
-      if [[ ${position} == "E" ]]; then
-        startDate=$(date -j -f '%Y-%m-%d' -v"${addition}" -v"+${eventDays}d" "${eventStart}" +%Y-%m-%d)
-      else
-        startDate=$(date -j -f '%Y-%m-%d' -v"${addition}" "${eventStart}" +%Y-%m-%d)
-      fi
       open "things:///add?title=${title}&when=${startDate}&list=${project}"
     fi
   done <"${EVENTLIST}"
