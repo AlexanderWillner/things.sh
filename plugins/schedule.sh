@@ -2,26 +2,43 @@
 
 myPluginID=$(getNextPluginID)
 myPlugin="plugin$myPluginID"
-myPluginCommand="scheduleEvent"
-myPluginDescription="Schedules an event by creating a number of tasks"
+myPluginCommand="schedule"
+myPluginDescription="Schedule an event by creating a number of related tasks"
 myPluginMethod="scheduleEvent"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
 scheduleEvent() {
-  [[ ! -r  "${EXPORT_EVENTLIST}" ]] && (echo "Error: ${EXPORT_EVENTLIST} not readable."; exit 1;)
-  echo -n "Start of the event [yyyy-mm-dd]: "
-  read -r eventStart
-  echo -n "Duration of the event [dd]: "
-  read -r eventDays
-  echo -n "X days before the event to prepare [dd]: "
-  read -r eventPreparationDays
-  echo -n "X days after the event to follow-up [dd]: "
-  read -r eventFollowupDays
-  echo "${eventStart} ${eventStart}+${eventDays}d ${eventStart}-${eventPreparationDays}d ${eventStart}+${eventDays}d+${eventFollowupDays}d"
-  while read -r line; do
-    echo "${line}"
-    #things:///add-project?title=2018%20Travel%20X&area=Orga
-    #things:///add?title=Two%20days%20before%3A%20Update%20ZEB%20%26%20Co&when=2018-03-12-1d&list=2018%20Travel%20X&heading=Preparation
+  [[ ! -r  "${EVENTLIST}" ]] && (echo "Error: ${EVENTLIST} not readable."; exit 1;)
+
+  local today=""
+  local eventStart="${EVENTSTART:-$today}"
+  local eventDays="${EVENTDURATION:-3}"
+  local project=""
+  
+  IFS=';'
+  today="$(date -j +%Y-%m-%d)"
+
+  while read -r -a array; do
+    if [ -z "${array:-}" ]; then continue; fi
+  	
+  	local position="${array[0]}"
+  	local addition="${array[1]}"
+  	local type="${array[2]}"
+  	local title=""
+
+  	title=$(python -c 'import urllib, sys; print urllib.quote(sys.argv[1])' "${array[3]}")
+  	
+  	if [[ "${type}" = "Project" ]]; then
+  		open "things:///add-project?title=${title}"
+  		project="${title}"
+  	fi
+	if [[ "${type}" = "Task" ]]; then
+		if [[ "${position}" = "E" ]]; then
+  			startDate=$(date -j -f '%Y-%m-%d' -v"${addition}" -v"+${eventDays}d" "${eventStart}" +%Y-%m-%d)
+	  	else
+  			startDate=$(date -j -f '%Y-%m-%d' -v"${addition}" "${eventStart}" +%Y-%m-%d)
+	  	fi
+  		open "things:///add?title=${title}&when=${startDate}&list=${project}"
+  	fi
   done < "${EXPORT_EVENTLIST}"
 }
-

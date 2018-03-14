@@ -1,8 +1,9 @@
-+0d: Title
-+0d: Task 1
-+0d: Task 2
-+1d: Task 3
-+Xd: Task 4
-+Xd: Task 5
-+Xd+30d: Task 6
+S;+0d;Project;TestTitle
+S;-3d;Task;Task 1
+S;-2d;Task;Task 2
+S;+0d;Task;Task 3
+S;+1d;Task;Task 4
+S;+1d;Task;Task 5
+E;+1d;Task;Task 6
+E;+30d;Task;Task 7
 

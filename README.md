@@ -117,6 +117,14 @@ Trashed   : 109|2017-08-02
 Days/Task : 41.0
 ```
 
+### Create Scheduled Event
+
+In case you have regularly to create projects (e.g., a business trip) using a template, this can be automated using the following command:
+
+```
+things.sh --start 2018-03-20 --days 7 --event resources/exampleEvent.thingslist schedule
+```
+
 ## Other Information
 
 ### Things URL Helper
