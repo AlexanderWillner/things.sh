@@ -142,12 +142,12 @@ parse() {
   done
 
   load_plugins
-  [[ "${LIMIT_BY}" == "all" ]] && export LIMIT_BY="-1"
-  
+  [[ ${LIMIT_BY} == "all" ]] && export LIMIT_BY="-1"
+
   local command=${1:-}
 
   if [[ -n ${command} ]]; then
-    if hasPlugin "${1}"; then 
+    if hasPlugin "${1}"; then
       invokePlugin "${1}"
     else
       usage
