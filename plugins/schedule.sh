@@ -8,8 +8,8 @@ myPluginMethod="scheduleEvent"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
 scheduleEvent() {
-  [[ ! -r ${EVENTLIST} ]] && (
-    echo "Error: ${EVENTLIST} not readable."
+  [[ ! -r ${EVENTLIST:-} ]] && (
+    echo "Error: '${EVENTLIST:-}' not readable."
     exit 1
   )
 
@@ -43,5 +43,5 @@ scheduleEvent() {
       fi
       open "things:///add?title=${title}&when=${startDate}&list=${project}"
     fi
-  done <"${EXPORT_EVENTLIST}"
+  done <"${EVENTLIST}"
 }
