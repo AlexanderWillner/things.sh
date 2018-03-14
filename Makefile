@@ -29,7 +29,7 @@ test: check
 	@file coverage/index.html||true
 
 style:
-	@type shfmt >/dev/null 2>&1 || (echo "Run 'go get -u mvdan.cc/sh/cmd/shfmt' first." >&2 ; exit 1)
+	@type shfmt >/dev/null 2>&1 || (echo "Run 'brew install shfmt' first." >&2 ; exit 1)
 	@shfmt -i 2 -w -s *.sh
 	@shfmt -i 2 -w -s plugins/*.sh
 
