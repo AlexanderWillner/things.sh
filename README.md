@@ -119,6 +119,8 @@ Days/Task : 41.0
 
 ### Create Scheduled Event
 
+[![Things.sh Scheduler](https://j.gifs.com/VPrxp9.gif)](https://youtu.be/npOYItkLuhU)
+
 In case you have regularly to create projects based on a template (e.g., a business trip or family vacation), this can be automated using the following command:
 
 ```
