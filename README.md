@@ -117,6 +117,16 @@ Trashed   : 109|2017-08-02
 Days/Task : 41.0
 ```
 
+### Create Scheduled Event
+
+[![Things.sh Scheduler](https://j.gifs.com/VPrxp9.gif)](https://youtu.be/npOYItkLuhU)
+
+In case you have regularly to create projects based on a template (e.g., a business trip or family vacation), this can be automated using the following command:
+
+```
+things.sh --start 2018-03-20 --days 7 --event resources/exampleEvent.thingslist schedule
+```
+
 ## Other Information
 
 ### Things URL Helper
@@ -124,7 +134,7 @@ Days/Task : 41.0
 [![Things3 URL Helper](https://j.gifs.com/59VllB.gif)](https://youtu.be/6niSmdXanug)
 
 The application ```ThingsURLHelper.app``` in the folder ```resources``` opens URLs of the form ```thingstodo://show?uuid=XXX``` with XXX being the ```UUID``` of a todo.
-By using ```things.sh csv``` you can identify the according URL of each task and open it within any macOS application, such as spotlight. Above an example using a local web page.
+By using ```things.sh csv``` you can identify the according URL of each task and open it within any macOS application, such as spotlight. Above an example using a local web page. Please note that this has been depreciated since Things 3.4.
 
 ### Markdown Clipboard to Things Workflow
 

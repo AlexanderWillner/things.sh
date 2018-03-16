@@ -66,6 +66,9 @@ export WAITING_TAG="Waiting for"
 export ORDER_BY="creationDate"
 export EXPORT_RANGE="-1 year"
 export SEARCH_STRING=""
+export EVENTLIST="$HOME/.trip.thingslist"
+export EVENTSTART=""
+export EVENTDURATION=""
 ###############################################################################
 
 # Define methods ##############################################################
@@ -121,18 +124,30 @@ parse() {
       EXPORT_RANGE="${2}"
       shift
       ;;
+    -e | --event)
+      EVENTLIST="${2}"
+      shift
+      ;;
+    -d | --duration)
+      EVENTDURATION="${2}"
+      shift
+      ;;
+    -t | --start)
+      EVENTSTART="${2}"
+      shift
+      ;;
     *) ;;
     esac
     shift
   done
 
   load_plugins
-  [[ "${LIMIT_BY}" == "all" ]] && export LIMIT_BY="-1"
-  
+  [[ ${LIMIT_BY} == "all" ]] && export LIMIT_BY="-1"
+
   local command=${1:-}
 
   if [[ -n ${command} ]]; then
-    if hasPlugin "${1}"; then 
+    if hasPlugin "${1}"; then
       invokePlugin "${1}"
     else
       usage
@@ -152,6 +167,9 @@ OPTIONS:
   -o|--orderBy <column>    Sort output by <column> (e.g. 'userModificationDate' or 'creationDate')
   -s|--string <string>     String <string> to search for
   -r|--range <string>      Limit CSV statistic export by <string>
+  -e|--event <filename>    Event: <filename> that contains a list of tasks
+  -t|--start <date>        Event: starts at <date>
+  -d|--duration <days>     Event: ends after <days>
   
 COMMANDS:
 EOF
