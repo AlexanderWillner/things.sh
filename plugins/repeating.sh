@@ -14,8 +14,9 @@ queryRepeating() {
 
 getRepeatingQuery() {
   read -rd '' query <<-SQL || true
-SELECT title
-FROM $TASKTABLE
+SELECT title,
+  "things:///show?id=" || TASK.uuid
+FROM $TASKTABLE as TASK
 WHERE $ISNOTTRASHED AND $ISOPEN AND $ISPOSTPONED
 AND recurrenceRule NOT NULL
 ORDER BY $ORDER_BY

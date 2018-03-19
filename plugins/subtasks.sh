@@ -16,7 +16,8 @@ getSubtasksQuery() {
   read -rd '' query <<-SQL || true
 SELECT 
   TASK.title,
-  CHECKLIST.title
+  CHECKLIST.title,
+  "things:///show?id=" || TASK.uuid
 FROM TMChecklistItem CHECKLIST
 LEFT OUTER JOIN $TASKTABLE TASK ON CHECKLIST.task = TASK.uuid
 WHERE TASK.$ISOPEN AND TASK.$ISNOTTRASHED

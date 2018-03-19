@@ -21,7 +21,8 @@ SELECT
     WHEN HEADING.title IS NOT NULL THEN HEADING.title
     ELSE "(No Context)"
   END,
-  TASK.title
+  TASK.title,
+  "things:///show?id=" || TASK.uuid
 FROM TMTaskTag TAGS
 LEFT JOIN $TASKTABLE TASK ON TAGS.tasks = TASK.uuid
 LEFT OUTER JOIN $TASKTABLE PROJECT ON TASK.project = PROJECT.uuid

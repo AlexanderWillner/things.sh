@@ -19,7 +19,7 @@ getCSVQuery1() {
 SELECT 
   T1.title,
   T1.type, 
-  'thingstodo://show?uuid='||T1.uuid,
+  'things:///show?id='||T1.uuid,
   date(T1.creationDate,"unixepoch"),
   date(T1.userModificationDate,"unixepoch"),
   date(T1.dueDate,"unixepoch"),

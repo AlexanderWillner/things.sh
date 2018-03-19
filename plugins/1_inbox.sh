@@ -14,7 +14,7 @@ queryInbox() {
 
 getInboxQuery() {
   read -rd '' query <<-SQL || true
-SELECT title
+SELECT title, "things:///show?id=" || TASK.uuid
 FROM $TASKTABLE TASK
 WHERE $ISNOTTRASHED AND $ISTASK AND $ISNOTSTARTED AND $ISOPEN
 ORDER BY TASK.$ORDER_BY
