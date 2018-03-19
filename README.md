@@ -41,10 +41,13 @@ usage: things.sh <OPTIONS> [COMMAND]
 
 OPTIONS:
   -l|--limitBy <number>    Limit output by <number> of results
-  -w|--waitingTag <tag>    Set waiting tag to <tag>
+  -w|--waitingTag <tag>    Set waiting/filter tag to <tag>
   -o|--orderBy <column>    Sort output by <column> (e.g. 'userModificationDate' or 'creationDate')
   -s|--string <string>     String <string> to search for
   -r|--range <string>      Limit CSV statistic export by <string>
+  -e|--event <filename>    Event: <filename> that contains a list of tasks
+  -t|--start <date>        Event: starts at <date>
+  -d|--duration <days>     Event: ends after <days>
   
 COMMANDS:
   inbox                    Shows 5 inbox tasks ordered by creationDate
@@ -70,11 +73,14 @@ COMMANDS:
   old                      Shows 5 old tasks ordered by creationDate
   projects                 Shows 5 projects ordered by creationDate
   repeating                Shows 5 repeating tasks ordered by creationDate
+  schedule                 Schedule an event by creating a number of related tasks
   search                   Searches for a specific task
   stat                     Provides a number of statistics about all tasks
   statcsv                  Exports some statistics as semicolon separated values for -1 year
   subtasks                 Shows 5 subtasks ordered by creationDate
-  waiting                  Shows 5 tasks with the tag Waiting
+  tag                      Shows 5 tasks with the tag "Waiting for" ordered by "creationDate"
+  tags                     Shows 5 tags ordered by their usage
+  waiting                  Shows 5 tasks with the tag "Waiting for" ordered by "creationDate"
 ```
 
 ## Examples 
@@ -133,8 +139,7 @@ things.sh --start 2018-03-20 --days 7 --event resources/exampleEvent.thingslist 
 
 [![Things3 URL Helper](https://j.gifs.com/59VllB.gif)](https://youtu.be/6niSmdXanug)
 
-The application ```ThingsURLHelper.app``` in the folder ```resources``` opens URLs of the form ```thingstodo://show?uuid=XXX``` with XXX being the ```UUID``` of a todo.
-By using ```things.sh csv``` you can identify the according URL of each task and open it within any macOS application, such as spotlight. Above an example using a local web page. Please note that this has been depreciated since Things 3.4.
+Since Version 3.4 Things.app has its own [URL Scheme](https://support.culturedcode.com/customer/en/portal/articles/2803573). It replaces the application ```ThingsURLHelper.app``` that you can still find in the folder ```resources```. By using most of the commands (e.g., ```things.sh csv```) you can identify the according URL of each task and open it within any macOS application, such as spotlight. Above an example using a local web page. You can click on the links in Terminal.app by using CMD+DoupleClick.
 
 ### Markdown Clipboard to Things Workflow
 
@@ -152,5 +157,5 @@ You can use the [macOS](https://support.apple.com/kb/PH25241) and [Alfred](https
  * Shell tips    : https://dev.to/thiht/shell-scripts-matter
  * Shell tips    : https://google.github.io/styleguide/shell.xml
  * Shell tips    : https://kvz.io/blog/2013/11/21/bash-best-practices/
- * Shell tips.   : https://github.com/progrium/bashstyle
+ * Shell tips    : https://github.com/progrium/bashstyle
  
