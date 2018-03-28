@@ -2,6 +2,30 @@
 
 readonly CLI="THINGSDB=test/Things.sqlite3 ./things.sh -l 10 -w 'Waiting'"
 
+testHelp() {
+  command="help"
+  expected="things.sh <OPTIONS>"
+  runSimpleTest "$command" "$expected"
+}
+
+testShowCommands() {
+  command="show-commands"
+  expected="inbox today"
+  runSimpleTest "$command" "$expected"
+}
+
+testShowOptions() {
+  command="show-options"
+  expected="\-r \-\-range"
+  runSimpleTest "$command" "$expected"
+}
+
+testStatCSV() {
+  command="statcsv"
+  expected="\"Date\";"
+  runSimpleTest "$command" "$expected"
+}
+
 testToday() {
   command="today"
   expected="Today Project|Today Todo"
@@ -23,6 +47,7 @@ testWaiting() {
 testStat() {
   command="stat"
   output=$(eval "$CLI" "$command" | sed -e 's/[ 	]//g')
+
 
   expected="Inbox:1"
   (echo "$output" | grep "$expected" >/dev/null 2>&1)
