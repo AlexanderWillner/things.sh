@@ -13,17 +13,17 @@ scheduleEvent() {
     exit 1
   )
 
-  local today=""
+  local today="$(date +%F)"
   local eventStart="${EVENTSTART:-$today}"
   local eventDays="${EVENTDURATION:-3}"
   local project=""
 
   IFS=';'
-  today="$(date -j +%Y-%m-%d)"
 
   while read -r -a array; do
     if [ -z "${array:-}" ]; then continue; fi
 
+    #todo: add input validation, e.g., "$addition" should include "+/-"
     local position="${array[0]}"
     local addition="${array[1]}"
     local type="${array[2]}"
