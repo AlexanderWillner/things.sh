@@ -13,9 +13,9 @@ scheduleEvent() {
     exit 1
   )
 
-  local today="$(date +%F)"
-  local eventStart="${EVENTSTART:-$today}"
-  local eventDays="${EVENTDURATION:-3}"
+  local -r today="$(date +%F)"
+  local -r eventStart="${EVENTSTART:-$today}"
+  local -r eventDays="${EVENTDURATION:-3}"
   local project=""
 
   IFS=';'
@@ -27,6 +27,7 @@ scheduleEvent() {
     local position="${array[0]}"
     local addition="${array[1]}"
     local type="${array[2]}"
+    local startDate=""
     local title=""
 
     title=$(python -c 'import urllib, sys; print urllib.quote(sys.argv[1])' "${array[3]}")
