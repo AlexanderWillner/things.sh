@@ -145,7 +145,9 @@ Since Version 3.4 Things.app has its own [URL Scheme](https://support.culturedco
 
 [![Demo Markdown Clipbaord to Things3](https://j.gifs.com/gL8kx9.gif)](https://youtu.be/HTaxOkZb9S4)
 
-You can use the [macOS](https://support.apple.com/kb/PH25241) and [Alfred](https://www.alfredapp.com/blog/tips-and-tricks/tutorial-importing-and-setting-up-alfred-workflows/) workflows in the folder ```resources``` to automatically convert MarkDown todos into Things3 tasks. Above an example using Bear.app.
+You can use the service/workflow in the folder ```resources``` to automatically convert MarkDown todos into Things 3 tasks. Above an example using Bear.app. To install you have two options:
+ * [Alfred](https://www.alfredapp.com/blog/tips-and-tricks/tutorial-importing-and-setting-up-alfred-workflows/) Workflow: [Download](https://github.com/AlexanderWillner/things.sh/blob/master/resources/Markdown%20Clipboard%20to%20Things.alfredworkflow?raw=true) and double click on the workflow file
+ * [macOS](https://support.apple.com/kb/PH25241) Service: [Download](https://github.com/AlexanderWillner/things.sh/blob/master/resources/Markdown%20Clipboard%20to%20Things.workflow.zip?raw=true), unzip and copy the workflow file to ~/Library/Services (you may need to enable the service under System Preferences > Keyboard > Shortcuts > Services > General > Markdown Clipboard to Things)
 
 ## CREDITS
  * Author        : Arjan van der Gaag (script for Things 2)
