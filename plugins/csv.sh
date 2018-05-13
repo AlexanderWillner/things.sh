@@ -9,12 +9,12 @@ myPluginMethod="exportCSV"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
 exportCSV() {
-  echo '"Title";"Type";"URI";"Creation Date";"Modification Date";"Due Date";"Start Date";"Completion Date";"Recurring";"Heading";"Project";"Area";"Subtask";"Notes"'
-  sqlite3 -csv -separator ';' "$THINGSDB" "$(getCSVQuery1)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT || true
-  sqlite3 -csv -separator ';' "$THINGSDB" "$(getCSVQuery2)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT || true
+  echo '"Title";"Type";"URI";"Creation Date";"Modification Date";"Due Date";"Start Date";"Completion Date";"Recurring";"Heading";"Project";"Area";"Subtask";"Notes";"Tags"'
+  sqlite3 -csv -separator ';' "$THINGSDB" "$(getCSVQueryTasks)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT || true
+  sqlite3 -csv -separator ';' "$THINGSDB" "$(getCSVQueryChecklists)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT || true
 }
 
-getCSVQuery1() {
+getCSVQueryTasks() {
   read -rd '' query <<-SQL || true
 SELECT 
   T1.title,
@@ -30,17 +30,21 @@ SELECT
   PROJECT.title,
   AREA.title,
   "",
-  REPLACE(REPLACE(T1.notes, CHAR(13), ', '), CHAR(10), ', ')
+  REPLACE(REPLACE(T1.notes, CHAR(13), ', '), CHAR(10), ', '),
+  GROUP_CONCAT(TAG.title)
 FROM $TASKTABLE T1
 LEFT OUTER JOIN $TASKTABLE PROJECT ON T1.project = PROJECT.uuid
 LEFT OUTER JOIN $AREATABLE AREA ON T1.area = AREA.uuid
 LEFT OUTER JOIN $TASKTABLE HEADING ON T1.actionGroup = HEADING.uuid
-WHERE T1.$ISNOTTRASHED AND (T1.$ISOPEN OR T1.$ISCOMPLETED);
+LEFT OUTER JOIN $TASKTAGTABLE TAGS ON T1.uuid = TAGS.tasks
+LEFT OUTER JOIN $TAGTABLE TAG ON TAGS.tags = TAG.uuid
+WHERE T1.$ISNOTTRASHED AND (T1.$ISOPEN OR T1.$ISCOMPLETED)
+GROUP BY T1.title
 SQL
   echo "${query}"
 }
 
-getCSVQuery2() {
+getCSVQueryChecklists() {
   read -rd '' query <<-SQL || true
 SELECT 
   T2.title,
@@ -56,7 +60,8 @@ SELECT
   "",
   "",
   "",
-  T1.title
+  T1.title,
+  ""
 FROM TMChecklistItem T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.task = T2.uuid
 WHERE (T2.$ISOPEN OR T2.$ISCOMPLETED) AND T2.$ISNOTTRASHED;
