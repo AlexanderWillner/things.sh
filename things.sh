@@ -25,22 +25,22 @@ set -o pipefail
 
 # Core parameters #############################################################
 realpath() {
-  OURPWD=$PWD
+  OURPWD="$PWD"
   cd "$(dirname "$1")"
-  LINK=$(readlink "$(basename "$1")")
+  LINK="$(readlink "$(basename "$1")")"
   while [ "$LINK" ]; do
     cd "$(dirname "$LINK")"
-    LINK=$(readlink "$(basename "$1")")
+    LINK="$(readlink "$(basename "$1")")"
   done
   REALPATH="$PWD/$(basename "$1")"
   cd "$OURPWD"
   echo "$REALPATH"
 }
-readonly PROGNAME=$(basename "$0")
+readonly PROGNAME="$(basename "$0")"
 readonly PATHNAME="$(dirname "$(realpath "$0")")"
 readonly DEFAULT_DB=~/Library/Containers/com.culturedcode.ThingsMac/Data/Library/Application\ Support/Cultured\ Code/Things/Things.sqlite3
-readonly THINGSDB=${THINGSDB:-$DEFAULT_DB}
-readonly PLUGINDIR="${PATHNAME}/plugins"
+readonly THINGSDB="${THINGSDB:-$DEFAULT_DB}"
+readonly PLUGINDIR="$PATHNAME/plugins"
 ###############################################################################
 
 # Things database structure ###################################################
@@ -87,24 +87,24 @@ require_sqlite3() {
 }
 
 require_db() {
-  test -r "${THINGSDB}" -a -f "${THINGSDB}" || {
-    echo >&2 "ERROR: Things database not found at '${THINGSDB}'."
+  test -r "$THINGSDB" -a -f "$THINGSDB" || {
+    echo >&2 "ERROR: Things database not found at '$THINGSDB'."
     echo >&2 "HINT: You might need to install Things from https://culturedcode.com/things/"
     exit 2
   }
 }
 
 load_plugins() {
-  for plugin in "${PLUGINDIR}"/*; do
+  for plugin in "$PLUGINDIR"/*; do
     # shellcheck source=/dev/null
-    source "${plugin}"
+    source "$plugin"
   done
 }
 
 parse() {
   while [[ ${#} -gt 1 ]]; do
     local key="${1}"
-    case $key in
+    case "$key" in
     -l | --limitBy)
       LIMIT_BY="${2}"
       shift
@@ -143,11 +143,11 @@ parse() {
   done
 
   load_plugins
-  [[ ${LIMIT_BY} == "all" ]] && export LIMIT_BY="-1"
+  [[ "$LIMIT_BY" == "all" ]] && export LIMIT_BY="-1"
 
-  local command=${1:-}
+  local command="${1:-}"
 
-  if [[ -n ${command} ]]; then
+  if [[ -n "$command" ]]; then
     if hasPlugin "${1}"; then
       invokePlugin "${1}"
     else
@@ -183,14 +183,14 @@ cleanup() {
   local linecallfunc="${3:-}"
   local command="${4:-}"
   local funcstack="${5:-}"
-  if [[ ${err} -ne "0" ]]; then
-    echo 2>&1 "ERROR: line ${line} - command '${command}' exited with status: ${err}."
-    echo 2>&1 "ERROR: In ${funcstack} called at line ${linecallfunc}."
-    echo 2>&1 "DEBUG: From function ${funcstack[0]} (line ${linecallfunc})."
+  if [[ "$err" -ne "0" ]]; then
+    echo 2>&1 "ERROR: line $line - command '$command' exited with status: $err."
+    echo 2>&1 "ERROR: In $funcstack called at line $linecallfunc."
+    echo 2>&1 "DEBUG: From function ${funcstack[0]} (line $linecallfunc)."
   fi
 }
 ###############################################################################
 
 # Run script ##################################################################
-[[ ${BASH_SOURCE[0]} == "${0}" ]] && trap 'cleanup "${?}" "${LINENO}" "${BASH_LINENO}" "${BASH_COMMAND}" $(printf "::%s" ${FUNCNAME[@]:-})' EXIT && main "${@:-}"
+[[ "${BASH_SOURCE[0]}" == "${0}" ]] && trap 'cleanup "${?}" "${LINENO}" "${BASH_LINENO}" "${BASH_COMMAND}" $(printf "::%s" ${FUNCNAME[@]:-})' EXIT && main "${@:-}"
 ###############################################################################
