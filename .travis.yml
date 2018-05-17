@@ -8,6 +8,7 @@ addons:
     - sqlite3
     - shunit2
     - shellcheck
+    - rustc
 script:
  - curl -skOL https://raw.githubusercontent.com/anordal/shellharden/master/shellharden.rs && rustc shellharden.rs
  - export PATH=".:$PATH"
