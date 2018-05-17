@@ -7,7 +7,8 @@ help:
 	@echo " * install  : install application to $(prefix)"
 	@echo " * clean    : cleanup"
 	@echo " * test     : run some tests"
-	@echo " * style    : style bash script"
+	@echo " * style    : style bash scripts"
+	@echo " * harden   : harden bash scripts"
 	@echo " * feedback : create a GitHub issue"
 
 install:
@@ -30,6 +31,10 @@ test: check
 	@shellharden --check things.sh
 	@for i in $$(ls plugins/); do shellharden --check plugins/$$i >/dev/null || rc=$$? ; done ; exit $$rc
 
+harden:
+	@shellharden --replace things.sh
+	@for i in $$(ls plugins/); do shellharden --replace plugins/$$i >/dev/null ; done
+	
 style:
 	@type shfmt >/dev/null 2>&1 || (echo "Run 'brew install shfmt' first." >&2 ; exit 1)
 	@shfmt -i 2 -w -s *.sh
