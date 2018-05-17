@@ -21,13 +21,14 @@ feedback:
 	@open https://github.com/alexanderwillner/things.sh/issues
 		
 test: check
-	@echo "Running shell checks..."
-	@shellcheck -x *.sh
-	@shellcheck -x plugins/*.sh
-	@shellharden --check things.sh #todo: run for all plugins
 	@echo "Running unit tests..."
 	@bashcov -s shunit2 test/thingsTest.sh
-	@file coverage/index.html||true
+	@echo "Running first round of shell checks..."
+	@shellcheck -x *.sh
+	@shellcheck -x plugins/*.sh
+	@echo "Running second round of shell checks..."
+	@shellharden --check things.sh
+	@for i in $$(ls plugins/); do shellharden --check plugins/$$i >/dev/null || rc=$$? ; done ; exit $$rc
 
 style:
 	@type shfmt >/dev/null 2>&1 || (echo "Run 'brew install shfmt' first." >&2 ; exit 1)

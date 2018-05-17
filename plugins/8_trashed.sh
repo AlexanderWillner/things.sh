@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="trashed"
 myPluginDescription="Shows $LIMIT_BY trashed tasks ordered by '$ORDER_BY'"
@@ -20,5 +20,5 @@ WHERE $ISTRASHED AND $ISTASK
 ORDER BY $ORDER_BY
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }

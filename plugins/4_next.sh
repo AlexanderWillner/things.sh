@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand='next'
 myPluginDescription="Shows $LIMIT_BY next tasks ordered by '$ORDER_BY'"
@@ -42,5 +42,5 @@ AND (
   )
 ORDER BY TASK.todayIndex;
 SQL
-  echo "${query}"
+  echo "$query"
 }

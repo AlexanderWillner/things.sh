@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand='upcoming'
 myPluginDescription="Shows $LIMIT_BY upcoming tasks ordered by date"
@@ -36,5 +36,5 @@ AND TASK.$ISPOSTPONED AND (TASK.startDate NOT NULL OR TASK.recurrenceRule NOT NU
 ORDER BY TASK.startdate, TASK.todayIndex
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }

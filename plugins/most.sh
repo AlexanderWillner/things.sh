@@ -1,41 +1,41 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="mostClosed"
 myPluginDescription="Shows $LIMIT_BY days on which most tasks were closed"
 myPluginMethod="queryMostClosed"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="mostCancelled"
 myPluginDescription="Shows $LIMIT_BY days on which most tasks were cancelled"
 myPluginMethod="queryMostCancelled"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="mostTrashed"
 myPluginDescription="Shows $LIMIT_BY days on which most tasks were trashed"
 myPluginMethod="queryMostTrashed"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="mostCreated"
 myPluginDescription="Shows $LIMIT_BY days on which most tasks were created"
 myPluginMethod="queryMostCreated"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="mostTasks"
 myPluginDescription="Shows $LIMIT_BY projects that have most tasks"
 myPluginMethod="queryMostTasks"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="mostCharacters"
 myPluginDescription="Shows $LIMIT_BY tasks that have most characters"
@@ -74,7 +74,7 @@ WHERE $ISNOTTRASHED AND $ISTASK AND $ISOPEN
 ORDER BY LENGTH(title) DESC
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }
 
 getMostTasks() {
@@ -87,7 +87,7 @@ GROUP BY PROJECT.title
 ORDER BY Tasks DESC
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }
 
 getMostClosed() {
@@ -99,7 +99,7 @@ GROUP BY DAY
 ORDER BY TasksDone DESC
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }
 
 getMostCancelled() {
@@ -111,7 +111,7 @@ GROUP BY DAY
 ORDER BY TasksDone DESC
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }
 
 getMostTrashed() {
@@ -123,7 +123,7 @@ GROUP BY DAY
 ORDER BY TasksDone DESC
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }
 
 getMostCreated() {

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="schedule"
 myPluginDescription="Schedule an event by creating a number of related tasks"
@@ -8,7 +8,7 @@ myPluginMethod="scheduleEvent"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
 scheduleEvent() {
-  [[ ! -r ${EVENTLIST:-} ]] && (
+  [[ ! -r "${EVENTLIST:-}" ]] && (
     echo "Error: '${EVENTLIST:-}' not readable."
     exit 1
   )
@@ -30,19 +30,19 @@ scheduleEvent() {
     local startDate=""
     local title=""
 
-    title=$(python -c 'import urllib, sys; print urllib.quote(sys.argv[1])' "${array[3]}")
+    title="$(python -c 'import urllib, sys; print urllib.quote(sys.argv[1])' "${array[3]}")"
 
-    if [[ ${position} == "E" ]]; then
-      startDate=$(date -j -f '%Y-%m-%d' -v"${addition}" -v"+${eventDays}d" "${eventStart}" +%Y-%m-%d)
+    if [[ "$position" == "E" ]]; then
+      startDate="$(date -j -f '%Y-%m-%d' -v"$addition" -v"+${eventDays}d" "$eventStart" +%Y-%m-%d)"
     else
-      startDate=$(date -j -f '%Y-%m-%d' -v"${addition}" "${eventStart}" +%Y-%m-%d)
+      startDate="$(date -j -f '%Y-%m-%d' -v"$addition" "$eventStart" +%Y-%m-%d)"
     fi
-    if [[ ${type} == "Project" ]]; then
-      open "things:///add-project?title=${title}&when=${startDate}"
-      project="${title}"
+    if [[ "$type" == "Project" ]]; then
+      open "things:///add-project?title=$title&when=$startDate"
+      project="$title"
     fi
-    if [[ ${type} == "Task" ]]; then
-      open "things:///add?title=${title}&when=${startDate}&list=${project}"
+    if [[ "$type" == "Task" ]]; then
+      open "things:///add?title=$title&when=$startDate&list=$project"
     fi
-  done <"${EVENTLIST}"
+  done <"$EVENTLIST"
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="stat"
 myPluginDescription="Provides a number of statistics about all tasks"
@@ -52,5 +52,5 @@ FROM $TASKTABLE
 WHERE $ISNOTTRASHED AND $ISTASK
 AND $ISCOMPLETED;
 SQL
-  echo "${query}"
+  echo "$query"
 }

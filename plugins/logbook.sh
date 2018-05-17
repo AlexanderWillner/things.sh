@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand='logbook'
 myPluginDescription="Shows $LIMIT_BY tasks completed today ordered by '$ORDER_BY'"
@@ -26,5 +26,5 @@ GROUP BY TASK.title
 ORDER BY TASK.$ORDER_BY
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }

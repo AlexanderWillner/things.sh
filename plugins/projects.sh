@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="projects"
 myPluginDescription="Shows $LIMIT_BY projects ordered by '$ORDER_BY'"
@@ -31,5 +31,5 @@ WHERE TASK.$ISNOTTRASHED AND TASK.$ISOPEN AND TASK.$ISPROJECT
 ORDER BY TASK.$ORDER_BY
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }

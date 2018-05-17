@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="cancelled"
 myPluginDescription="Shows $LIMIT_BY cancelled tasks ordered by cancel date"
@@ -32,5 +32,5 @@ WHERE TASK.$ISNOTTRASHED AND TASK.$ISCANCELLED AND TASK.$ISTASK
 ORDER BY StopDate
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }

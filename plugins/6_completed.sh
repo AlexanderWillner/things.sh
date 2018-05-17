@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="completed"
 myPluginDescription="Shows $LIMIT_BY completed tasks ordered by '$ORDER_BY'"
@@ -31,5 +31,5 @@ AND TASK.$ISCOMPLETED
 ORDER BY TASK.$ORDER_BY
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }

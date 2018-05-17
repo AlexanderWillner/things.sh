@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="statcsv"
 myPluginDescription="Exports some statistics as semicolon separated values for $EXPORT_RANGE"
@@ -35,5 +35,5 @@ FROM timeseries
   LEFT JOIN ($(getMostClosed)) AS CLOSED ON CLOSED.DAY = date
   LEFT JOIN ($(getMostCancelled)) AS CANCELLED ON CANCELLED.DAY = date    
 SQL
-  echo "${query}"
+  echo "$query"
 }

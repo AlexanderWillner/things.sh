@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="csv"
 myPluginDescription="Exports all tasks as semicolon seperated values incl. notes and Excel friendly"
@@ -41,7 +41,7 @@ LEFT OUTER JOIN $TAGTABLE TAG ON TAGS.tags = TAG.uuid
 WHERE T1.$ISNOTTRASHED AND (T1.$ISOPEN OR T1.$ISCOMPLETED)
 GROUP BY T1.title
 SQL
-  echo "${query}"
+  echo "$query"
 }
 
 getCSVQueryChecklists() {
@@ -66,5 +66,5 @@ FROM TMChecklistItem T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.task = T2.uuid
 WHERE (T2.$ISOPEN OR T2.$ISCOMPLETED) AND T2.$ISNOTTRASHED;
 SQL
-  echo "${query}"
+  echo "$query"
 }

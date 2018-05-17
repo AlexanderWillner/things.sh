@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="subtasks"
 myPluginDescription="Shows $LIMIT_BY subtasks ordered by '$ORDER_BY'"
@@ -24,5 +24,5 @@ WHERE TASK.$ISOPEN AND TASK.$ISNOTTRASHED
 ORDER BY CHECKLIST.$ORDER_BY
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }

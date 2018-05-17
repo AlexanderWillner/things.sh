@@ -1,13 +1,13 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand='show-commands'
 myPluginDescription=""
 myPluginMethod='getCommands'
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand='show-options'
 myPluginDescription=""

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="search"
 myPluginDescription="Searches for a specific task"
@@ -9,7 +9,7 @@ myPluginMethod="querySearch"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
 querySearch() {
-  [[ -z ${SEARCH_STRING:-} ]] && echo 2>&1 "ERROR: Use '-s' to set search string first" && exit 1
+  [[ -z "${SEARCH_STRING:-}" ]] && echo 2>&1 "ERROR: Use '-s' to set search string first" && exit 1
   sqlite3 "$THINGSDB" "$(getSearchQuery1)"
   sqlite3 "$THINGSDB" "$(getSearchQuery2)"
 }
@@ -33,7 +33,7 @@ WHERE T1.$ISNOTTRASHED AND T1.$ISTASK
 AND (T1.title LIKE "%$SEARCH_STRING%" OR T2.title LIKE "%$SEARCH_STRING%")
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }
 
 getSearchQuery2() {
@@ -50,5 +50,5 @@ WHERE T2.$ISNOTTRASHED
 AND T1.title LIKE "%$SEARCH_STRING%"
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }

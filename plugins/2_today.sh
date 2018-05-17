@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand='today'
 myPluginDescription="Shows $LIMIT_BY todays tasks ordered by index"
@@ -33,5 +33,5 @@ AND TASK.startdate is NOT NULL
 ORDER BY TASK.startdate, TASK.todayIndex
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }

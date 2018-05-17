@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="repeating"
 myPluginDescription="Shows $LIMIT_BY repeating tasks ordered by '$ORDER_BY'"
@@ -22,5 +22,5 @@ AND recurrenceRule NOT NULL
 ORDER BY $ORDER_BY
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }

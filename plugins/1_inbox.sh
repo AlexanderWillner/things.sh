@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand='inbox'
 myPluginDescription="Shows $LIMIT_BY inbox tasks ordered by '$ORDER_BY'"
@@ -20,5 +20,5 @@ WHERE $ISNOTTRASHED AND $ISTASK AND $ISNOTSTARTED AND $ISOPEN
 ORDER BY TASK.$ORDER_BY
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }

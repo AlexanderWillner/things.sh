@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="waiting"
 myPluginDescription="Shows $LIMIT_BY tasks with the tag \"$WAITING_TAG\" ordered by \"$ORDER_BY\""
@@ -33,5 +33,5 @@ AND TAGS.tags=(SELECT uuid FROM $TAGTABLE WHERE title='$WAITING_TAG')
 ORDER BY TASK.$ORDER_BY
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand='due'
 myPluginDescription="Shows $LIMIT_BY tasks ordered by due date"
@@ -33,5 +33,5 @@ AND TASK.dueDate NOT NULL
 ORDER BY TASK.dueDate
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }

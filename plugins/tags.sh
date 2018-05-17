@@ -1,6 +1,6 @@
 #!/bin/bash
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="tag"
 myPluginDescription="Shows $LIMIT_BY tasks with the tag \"$WAITING_TAG\" ordered by \"$ORDER_BY\""
@@ -8,7 +8,7 @@ myPluginMethod="queryWaiting"
 
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
-myPluginID=$(getNextPluginID)
+myPluginID="$(getNextPluginID)"
 myPlugin="plugin$myPluginID"
 myPluginCommand="tags"
 myPluginDescription="Shows $LIMIT_BY tags ordered by their usage"
@@ -41,5 +41,5 @@ FROM $TAGTABLE TAGS
 ORDER BY quantity DESC
 LIMIT $LIMIT_BY
 SQL
-  echo "${query}"
+  echo "$query"
 }
