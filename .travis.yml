@@ -9,4 +9,6 @@ addons:
     - shunit2
     - shellcheck
 script:
+ - curl -skOL https://raw.githubusercontent.com/anordal/shellharden/master/shellharden.rs && rustc shellharden.rs
+ - export PATH=".:$PATH"
  - make test
