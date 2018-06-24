@@ -149,6 +149,12 @@ You can use the service/workflow in the folder ```resources``` to automatically 
  * [Alfred](https://www.alfredapp.com/blog/tips-and-tricks/tutorial-importing-and-setting-up-alfred-workflows/) Workflow: [Download](https://github.com/AlexanderWillner/things.sh/blob/master/resources/Markdown%20Clipboard%20to%20Things.alfredworkflow?raw=true) and double click on the workflow file
  * [macOS](https://support.apple.com/kb/PH25241) Service: [Download](https://github.com/AlexanderWillner/things.sh/blob/master/resources/Markdown%20Clipboard%20to%20Things.workflow.zip?raw=true), unzip and copy the workflow file to ~/Library/Services (you may need to enable the service under System Preferences > Keyboard > Shortcuts > Services > General > Markdown Clipboard to Things)
 
+### Count Minutes Planned Today
+
+It has [some benefits](https://blog.amazingmarvin.com/5-benefits-of-using-time-estimates-in-your-to-do-list/) to use time estimates in your to-do list. In case you're using tags like ```XXmin``` (XX = number in minutes), then there is one script in this repository that can calculate the total minutes of planned to-dos in your ```Today``` view. To install, [download the service](https://github.com/AlexanderWillner/things.sh/blob/master/resources/MinutesTodayInThings.zip?raw=true), unzip it and copy the workflow file to ~/Library/Services (you may need to enable the service under System Preferences > Keyboard > Shortcuts > Services > General > Markdown Clipboard to Things).
+
+![Minutes Planned Today in Things3](img/todayMinutes.png)
+
 ## CREDITS
  * Author        : Arjan van der Gaag (script for Things 2)
  * Author        : Alexander Willner (updates for Things 3, complete rewrite)
