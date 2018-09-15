@@ -9,16 +9,16 @@ myPluginMethod="exportCSV"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
 exportCSV() {
-  echo '"Title";"Type";"URI";"Creation Date";"Modification Date";"Due Date";"Start Date";"Completion Date";"Recurring";"Heading";"Project";"Area";"Subtask";"Notes";"Tags"'
-  sqlite3 -csv -separator ';' "$THINGSDB" "$(getCSVQueryTasks)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT || true
-  sqlite3 -csv -separator ';' "$THINGSDB" "$(getCSVQueryChecklists)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t WINDOWS-1252//TRANSLIT || true
+  echo '"Title"'"${SEP:-;}"'"Type"'"${SEP:-;}"'"URI"'"${SEP:-;}"'"Creation Date"'"${SEP:-;}"'"Modification Date"'"${SEP:-;}"'"Due Date"'"${SEP:-;}"'"Start Date"'"${SEP:-;}"'"Completion Date"'"${SEP:-;}"'"Recurring"'"${SEP:-;}"'"Heading"'"${SEP:-;}"'"Project"'"${SEP:-;}"'"Area"'"${SEP:-;}"'"Subtask"'"${SEP:-;}"'"Notes"'"${SEP:-;}"'"Tags"'
+  sqlite3 -csv -separator "${SEP:-;}" "$THINGSDB" "$(getCSVQueryTasks)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t "${ENCODING:-WINDOWS-1252//TRANSLIT}" || true
+  sqlite3 -csv -separator "${SEP:-;}" "$THINGSDB" "$(getCSVQueryChecklists)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t "${ENCODING:-WINDOWS-1252//TRANSLIT}" || true
 }
 
 getCSVQueryTasks() {
   read -rd '' query <<-SQL || true
-SELECT 
+SELECT
   T1.title,
-  T1.type, 
+  T1.type,
   'things:///show?id='||T1.uuid,
   date(T1.creationDate,"unixepoch"),
   date(T1.userModificationDate,"unixepoch"),
@@ -46,7 +46,7 @@ SQL
 
 getCSVQueryChecklists() {
   read -rd '' query <<-SQL || true
-SELECT 
+SELECT
   T2.title,
   T2.type,
   'thingstodo://show?uuid='||T2.uuid,

@@ -20,7 +20,7 @@ You can use [brew](https://brew.sh) to install and later update the script:
       . $(brew --prefix)/etc/bash_completion
     fi
 ```
- 
+
 ## Example Graphs
 
 These graphs have been generated based on the CSV export. For example: ```things.sh -r '-14 days' statcsv > lastTwoWeeks.csv && open lastTwoWeeks.csv``` (and then generating a ```Stacked Column``` graph).
@@ -48,7 +48,7 @@ OPTIONS:
   -e|--event <filename>    Event: <filename> that contains a list of tasks
   -t|--start <date>        Event: starts at <date>
   -d|--duration <days>     Event: ends after <days>
-  
+
 COMMANDS:
   inbox                    Shows 5 inbox tasks ordered by creationDate
   today                    Shows 5 todays tasks ordered by index
@@ -83,11 +83,14 @@ COMMANDS:
   waiting                  Shows 5 tasks with the tag "Waiting for" ordered by "creationDate"
 ```
 
-## Examples 
+## Examples
 
 ### CSV export and open with Excel
 
 ```things.sh csv > Things3Export.csv && open Things3Export.csv```
+
+Note that this command generates a file that is readable by Microsoft Excel in Europe, i.e., the default encoding is ```WINDOWS-1252``` and the separator is ```;```. If you want to import the file in another region, you can specify the according encoding using ```ENCODING="WINDOWS-1251//TRANSLIT" ./things.sh csv > Things3Export.csv```. Or to follow the standard use ```SEP="," ENCODING="UTF-8" ./things.sh csv > Things3Export.csv```.
+
 
 ### Statistics
 
@@ -166,4 +169,4 @@ It has [some benefits](https://blog.amazingmarvin.com/5-benefits-of-using-time-e
  * Shell tips    : https://google.github.io/styleguide/shell.xml
  * Shell tips    : https://kvz.io/blog/2013/11/21/bash-best-practices/
  * Shell tips    : https://github.com/progrium/bashstyle
- 
+
