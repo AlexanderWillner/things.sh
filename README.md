@@ -136,6 +136,8 @@ In case you have regularly to create projects based on a template (e.g., a busin
 things.sh --start 2018-03-20 --days 7 --event resources/exampleEvent.thingslist schedule
 ```
 
+Note that you might have to ```Enable Things URLs``` in the Things preferences first.
+
 ## Other Information
 
 ### Things URL Helper
