@@ -4,6 +4,7 @@
 
 Simple read-only comand-line interface to your Things 3 database (incl. CSV export). Since Things uses a SQLite database (which should come pre-installed on your Mac) we can simply query it straight from the command line. We only do read operations since we don't want to mess up your data.
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/62336d873da240ac89188efdb9f50d8b)](https://app.codacy.com/app/AlexanderWillner/things.sh?utm_source=github.com&utm_medium=referral&utm_content=AlexanderWillner/things.sh&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.org/AlexanderWillner/things.sh.svg?branch=master)](https://travis-ci.org/AlexanderWillner/things.sh)
 
 ## Installation
