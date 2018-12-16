@@ -14,6 +14,9 @@ help:
 install:
 	@echo "Hint: consider to use 'brew install AlexanderWillner/tap/things.sh' instead"
 	@install -m 0755 things.sh $(prefix)/bin
+	@install -d -m 0755 plugins $(prefix)/bin/plugins
+	@install -m 0755 plugins/*.sh $(prefix)/bin/plugins/
+	@echo "Installed at $(prefix)/bin"
 
 clean:
 	@rm -rf coverage
