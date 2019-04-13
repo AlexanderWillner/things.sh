@@ -12,15 +12,16 @@ queryIcal() {
   IFS=$'\n'
   echo "BEGIN:VCALENDAR"
   echo "VERSION:2.0"
-  for a in $(sqlite3 "$THINGSDB" "$(getIcalQuery)"); do
+  for a in $(sqlite3 "$THINGSDB" "$(getIcalQuery)"| awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t "${ENCODING:-WINDOWS-1252//TRANSLIT}" || true); do
     echo "BEGIN:VEVENT"
     IFS='|' read -ra ADDR <<< "$a"
     duedate="${ADDR[0]}"
-    title="${ADDR[2]}"
-    url="${ADDR[3]}"
+    title="${ADDR[1]:-}"
+    url="${ADDR[2]:-}"
+    notes="${ADDR[3]:-}"
     echo "DTSTART;VALUE=DATE:${duedate//-}"
     echo "SUMMARY:$title"
-    echo "DESCRIPTION:$url"
+    echo "DESCRIPTION:$notes - $url"
     echo "END:VEVENT"
   done
   echo "END:VCALENDAR"
@@ -30,14 +31,9 @@ getIcalQuery() {
   read -rd '' query <<-SQL || true
 SELECT
   date(TASK.dueDate,"unixepoch"),
-  CASE 
-    WHEN AREA.title IS NOT NULL THEN AREA.title 
-    WHEN PROJECT.title IS NOT NULL THEN PROJECT.title
-    WHEN HEADING.title IS NOT NULL THEN HEADING.title
-    ELSE "(No Context)"
-  END,
-  TASK.title,
-  "things:///show?id=" || TASK.uuid
+  "" || TASK.title,
+  "things:///show?id=" || TASK.uuid,
+  "" || REPLACE(REPLACE(TASK.notes, CHAR(13), ', '), CHAR(10), ', ')
 FROM $TASKTABLE as TASK
 LEFT OUTER JOIN $TASKTABLE PROJECT ON TASK.project = PROJECT.uuid
 LEFT OUTER JOIN $AREATABLE AREA ON TASK.area = AREA.uuid
