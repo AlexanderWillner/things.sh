@@ -49,7 +49,7 @@ getCSVQueryChecklists() {
 SELECT
   T2.title,
   T2.type,
-  'thingstodo://show?uuid='||T2.uuid,
+  'things:///show?id='||T2.uuid,
   date(T1.creationDate,"unixepoch"),
   date(T1.userModificationDate,"unixepoch"),
   "",
