@@ -13,6 +13,6 @@ fi
 
 # Export with "," separator instead of ";".  It would be nice to use UTF-8 but
 # this didn't work on one system I tried it on so it seems to be safer without.
-SEP="," ./things.sh csv > Things3Export.csv
+SEP="," ENCODING="UTF-8" ./things.sh csv > Things3Export.csv
 
 mv Things3Export.csv ..
