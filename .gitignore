@@ -2,3 +2,5 @@ coverage
 *.csv
 .DS_Store
 
+/Things3Export
+/Things3Export.zip

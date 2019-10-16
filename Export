@@ -1,0 +1,18 @@
+#!/bin/bash
+# Copyright 2019 Amazing Marvin
+# License: public domain
+
+# Jump to dir of this source file (in case user double clicks Export)
+cd -- "$(dirname "$BASH_SOURCE")"
+
+# In releases, all things.sh content goes in a scripts/ dir so it's obvious
+# what to double-click.
+if [ -d scripts ]; then
+  cd scripts
+fi
+
+# Export with "," separator instead of ";".  It would be nice to use UTF-8 but
+# this didn't work on one system I tried it on so it seems to be safer without.
+SEP="," ./things.sh csv > Things3Export.csv
+
+mv Things3Export.csv ..

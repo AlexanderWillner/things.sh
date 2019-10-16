@@ -1,0 +1,13 @@
+#!/bin/bash
+
+rm -rf Things3Export
+mkdir Things3Export
+cp Export Things3Export
+cat <<EOF > Things3Export/README.txt
+Double click Export to create Things3Export.csv
+See https://github.com/AlexanderWillner/things.sh for more info
+EOF
+mkdir Things3Export/scripts
+cp -r things.sh README.md plugins Things3Export/scripts
+
+zip -9 Things3Export.zip -r Things3Export
