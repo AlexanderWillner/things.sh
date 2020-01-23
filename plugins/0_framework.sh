@@ -1,4 +1,6 @@
 #!/bin/bash
+# shellcheck disable=SC1087
+
 getNextPluginID() {
   idx=0
   plugin="plugin$idx"
