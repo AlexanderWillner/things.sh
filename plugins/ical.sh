@@ -12,7 +12,7 @@ queryIcal() {
   IFS=$'\n'
   echo "BEGIN:VCALENDAR"
   echo "VERSION:2.0"
-  for a in "$(sqlite3 "$THINGSDB" "$(getIcalQuery)"| awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t "${ENCODING:-WINDOWS-1252//TRANSLIT}" || true)"; do
+  sqlite3 "$THINGSDB" "$(getIcalQuery)"| awk '{gsub("<[^>]*>", "")}1' | (iconv -c -f UTF-8 -t "${ENCODING:-WINDOWS-1252//TRANSLIT}" || true)  | while read -r a; do
     echo "BEGIN:VEVENT"
     IFS='|' read -ra ADDR <<< "$a"
     duedate="${ADDR[0]}"
