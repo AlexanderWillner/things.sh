@@ -32,7 +32,8 @@ test: check
 	@shellcheck -x plugins/*.sh
 	@echo "Running second round of shell checks..."
 	@shellharden --check things.sh
-	@for i in $$(ls plugins/); do shellharden --check plugins/$$i >/dev/null || rc=$$? ; done ; exit $$rc
+	@echo "  thing.sh: $$?"
+	@for i in $$(ls plugins/); do shellharden --check plugins/$$i >/dev/null || rc=$$? ; echo "  plugins/$$i: $$? $$rc"; done ; exit $$rc
 
 harden:
 	@shellharden --replace things.sh
