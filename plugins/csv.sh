@@ -59,8 +59,8 @@ SELECT
   "",
   "",
   "",
-  "",
   T1.title,
+  "",
   ""
 FROM TMChecklistItem T1
 LEFT OUTER JOIN $TASKTABLE T2 ON T1.task = T2.uuid
