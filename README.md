@@ -7,6 +7,8 @@ Simple read-only comand-line interface to your Things 3 database (incl. CSV expo
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/62336d873da240ac89188efdb9f50d8b)](https://app.codacy.com/app/AlexanderWillner/things.sh?utm_source=github.com&utm_medium=referral&utm_content=AlexanderWillner/things.sh&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.org/AlexanderWillner/things.sh.svg?branch=master)](https://travis-ci.org/AlexanderWillner/things.sh) [![download](https://img.shields.io/github/downloads/AlexanderWillner/things.sh/total)](https://github.com/AlexanderWillner/things.sh/releases)
 
+These scripts are `bash` based and a `python` based fork is available [at another repository](https://github.com/AlexanderWillner/KanbanView).
+
 ## Installation
 
 You can use [brew](https://brew.sh) to install and later update the script:
