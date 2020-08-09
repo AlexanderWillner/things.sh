@@ -1,2 +1,4 @@
 coverage
 *.csv
+.DS_Store
+
