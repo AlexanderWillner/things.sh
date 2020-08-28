@@ -12,5 +12,5 @@ addons:
 script:
 # - curl -skOL https://raw.githubusercontent.com/anordal/shellharden/master/shellharden.rs && rustc shellharden.rs
 # - git clone https://github.com/anordal/shellharden.git && cd shellharden && cargo build && export PATH="$(pwd)/target/debug/:$PATH" && cd -
- - cargo install shellharden
+ - cargo install shellharden ; export PATH="/home/travis/.cargo/bin:$PATH"
  - make test
