@@ -24,6 +24,8 @@ You can use [brew](https://brew.sh) to install and later update the script:
     fi
 ```
 
+To uninstall just write `brew uninstall things.sh`.
+
 ## Example Graphs
 
 These graphs have been generated based on the CSV export. For example: ```things.sh -r '-14 days' statcsv > lastTwoWeeks.csv && open lastTwoWeeks.csv``` (and then generating a ```Stacked Column``` graph).
