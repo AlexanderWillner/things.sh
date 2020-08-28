@@ -13,12 +13,12 @@ These scripts are `bash` based and a `python` based fork is available [at anothe
 
 You can use [brew](https://brew.sh) to install and later update the script:
 
- - Prepare: ```brew tap AlexanderWillner/tap```
- - Install: ```brew install things.sh```
- - Upgrade: ```brew upgrade```
- - Autocompletion: ```brew install bash-completion```. Then add to ```~/.bashrc```:
+- Prepare: ```brew tap AlexanderWillner/tap```
+- Install: ```brew install things.sh```
+- Upgrade: ```brew upgrade```
+- Autocompletion: ```brew install bash-completion```. Then add to ```~/.bashrc```:
 
-```
+```bash
     if [ -f $(brew --prefix)/etc/bash_completion ]; then
       . $(brew --prefix)/etc/bash_completion
     fi
@@ -40,7 +40,7 @@ These graphs have been generated based on the CSV export. For example: ```things
 
 Note that you could override the location of the database used by setting the THINGSDB environment variable. For usage information, run the script with no arguments or with "help":
 
-```
+```bash
 $ things.sh --limitBy 5 help
 usage: things.sh <OPTIONS> [COMMAND]
 
@@ -96,10 +96,9 @@ COMMANDS:
 
 Note that this command generates a file that is readable by Microsoft Excel in Europe, i.e., the default encoding is ```WINDOWS-1252``` and the separator is ```;```. If you want to import the file in another region, you can specify the according encoding using ```ENCODING="WINDOWS-1251//TRANSLIT" ./things.sh csv > Things3Export.csv```. Or to follow the standard use ```SEP="," ENCODING="UTF-8" ./things.sh csv > Things3Export.csv```.
 
-
 ### Statistics
 
-```
+```bash
 $ things.sh stat
 Inbox     : 0
 Today     : 7
@@ -137,8 +136,8 @@ Days/Task : 41.0
 
 In case you have regularly to create projects based on a template (e.g., a business trip or family vacation), this can be automated using the following command:
 
-```
-things.sh --start 2018-03-20 --days 7 --event resources/exampleEvent.thingslist schedule
+```bash
+$ things.sh --start 2018-03-20 --days 7 --event resources/exampleEvent.thingslist schedule
 ```
 
 Note that you might have to ```Enable Things URLs``` in the Things preferences first.
@@ -156,8 +155,9 @@ Since Version 3.4 Things.app has its own [URL Scheme](https://support.culturedco
 [![Demo Markdown Clipbaord to Things3](https://j.gifs.com/gL8kx9.gif)](https://youtu.be/HTaxOkZb9S4)
 
 You can use the service/workflow in the folder ```resources``` to automatically convert MarkDown todos into Things 3 tasks. Above an example using Bear.app. To install you have two options:
- * [Alfred](https://www.alfredapp.com/blog/tips-and-tricks/tutorial-importing-and-setting-up-alfred-workflows/) Workflow: [Download](https://github.com/AlexanderWillner/things.sh/blob/master/resources/Markdown%20Clipboard%20to%20Things.alfredworkflow?raw=true) and double click on the workflow file
- * [macOS](https://support.apple.com/kb/PH25241) Service: [Download](https://github.com/AlexanderWillner/things.sh/blob/master/resources/Markdown%20Clipboard%20to%20Things.workflow.zip?raw=true), unzip and copy the workflow file to ~/Library/Services (you may need to enable the service under System Preferences > Keyboard > Shortcuts > Services > General > Markdown Clipboard to Things)
+
+- [Alfred](https://www.alfredapp.com/blog/tips-and-tricks/tutorial-importing-and-setting-up-alfred-workflows/) Workflow: [Download](https://github.com/AlexanderWillner/things.sh/blob/master/resources/Markdown%20Clipboard%20to%20Things.alfredworkflow?raw=true) and double click on the workflow file
+- [macOS](https://support.apple.com/kb/PH25241) Service: [Download](https://github.com/AlexanderWillner/things.sh/blob/master/resources/Markdown%20Clipboard%20to%20Things.workflow.zip?raw=true), unzip and copy the workflow file to ~/Library/Services (you may need to enable the service under System Preferences > Keyboard > Shortcuts > Services > General > Markdown Clipboard to Things)
 
 ### Count Minutes Planned Today
 
@@ -166,14 +166,14 @@ It has [some benefits](https://blog.amazingmarvin.com/5-benefits-of-using-time-e
 ![Minutes Planned Today in Things3](img/todayMinutes.png)
 
 ## CREDITS
- * Author        : Arjan van der Gaag (script for Things 2)
- * Author        : Alexander Willner (updates for Things 3, complete rewrite)
- * License       : Whatever. Use at your own risk.
- * Source        : https://github.com/AlexanderWillner/things.sh
- * Shell checker : https://github.com/koalaman/shellcheck
- * Shell cleanup : https://github.com/mvdan/sh/
- * Shell tips    : https://dev.to/thiht/shell-scripts-matter
- * Shell tips    : https://google.github.io/styleguide/shell.xml
- * Shell tips    : https://kvz.io/blog/2013/11/21/bash-best-practices/
- * Shell tips    : https://github.com/progrium/bashstyle
 
+- Author        : Arjan van der Gaag (script for Things 2)
+- Author        : Alexander Willner (updates for Things 3, complete rewrite)
+- License       : Whatever. Use at your own risk.
+- Source        : [https://github.com/AlexanderWillner/things.sh](https://github.com/AlexanderWillner/things.sh)
+- Shell checker : [https://github.com/koalaman/shellcheck](https://github.com/koalaman/shellcheck)
+- Shell cleanup : [https://github.com/mvdan/sh/](https://github.com/mvdan/sh/)
+- Shell tips    : [https://dev.to/thiht/shell-scripts-matter](https://dev.to/thiht/shell-scripts-matter)
+- Shell tips    : [https://google.github.io/styleguide/shell.xml](https://google.github.io/styleguide/shell.xml)
+- Shell tips    : [https://kvz.io/blog/2013/11/21/bash-best-practices/](https://kvz.io/blog/2013/11/21/bash-best-practices/)
+- Shell tips    : [https://github.com/progrium/bashstyle](https://github.com/progrium/bashstyle)
