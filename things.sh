@@ -38,7 +38,7 @@ realpath() {
 }
 readonly PROGNAME="$(basename "$0")"
 readonly PATHNAME="$(dirname "$(realpath "$0")")"
-readonly DEFAULT_DB="$HOME/Library/Group Containers/JLMPQHK86H.com.culturedcode.ThingsMac/Things.sqlite3"
+readonly DEFAULT_DB="${HOME}/Library/Group Containers/JLMPQHK86H.com.culturedcode.ThingsMac/Things Database.thingsdatabase/main.sqlite"
 readonly THINGSDB="${THINGSDB:-$DEFAULT_DB}"
 readonly PLUGINDIR="$PATHNAME/plugins"
 ###############################################################################
