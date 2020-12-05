@@ -1,0 +1,46 @@
+on:
+  push:
+    tags:
+      - 'v*'
+
+name: Create Easy Release
+
+jobs:
+  build:
+    name: Create Easy Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Build
+        run: |
+          ./dist
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Easy Things 3 CSV Export
+          body: |
+            - Click the Things3Export.zip link below to download
+            - Unzip the downloaded Things3Export.zip by double clicking (if your browser didn't unzip it automatically)
+            - Double click Export in the new Things3Export directory
+            - You may have to  → System Preferences... → Security & Privacy → General → Open Anyway
+
+            This will create Things3Export.csv in the same directory.
+
+            Downloads ↓
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload_release_zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./Things3Export.zip
+          asset_name: Things3Export.zip
+          asset_content_type: application/zip
