@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf Things3Export
+rm -rf Things3Export Things3Export.zip
 mkdir Things3Export
 cp Export Things3Export
 cat <<EOF > Things3Export/README.txt
