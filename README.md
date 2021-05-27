@@ -4,10 +4,10 @@
 
 Simple read-only comand-line interface to your Things 3 database (incl. CSV export). Since Things uses a SQLite database (which should come pre-installed on your Mac) we can simply query it straight from the command line. We only do read operations since we don't want to mess up your data.
 
+Note that I've migrated this `bash` based version to a [`python` based fork](https://github.com/thingsapi/things-cli).
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/62336d873da240ac89188efdb9f50d8b)](https://app.codacy.com/app/AlexanderWillner/things.sh?utm_source=github.com&utm_medium=referral&utm_content=AlexanderWillner/things.sh&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.org/AlexanderWillner/things.sh.svg?branch=master)](https://travis-ci.org/AlexanderWillner/things.sh) [![download](https://img.shields.io/github/downloads/AlexanderWillner/things.sh/total)](https://github.com/AlexanderWillner/things.sh/releases)
-
-These scripts are `bash` based and a `python` based fork is available [at another repository](https://github.com/AlexanderWillner/KanbanView).
 
 ## Installation
 
