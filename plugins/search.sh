@@ -20,7 +20,7 @@ SELECT
   T1.title as "Title", 
   date(T1.creationDate,"unixepoch") as "Created",
   date(T1.userModificationDate,"unixepoch") as "Modified",
-  date(T1.dueDate,"unixepoch") as "Due",
+  date(T1.deadline,"unixepoch") as "Due",
   date(T1.startDate,"unixepoch") as "Start",
   date(T1.stopDate,"unixepoch") as "Stopped",
   T2.title as "Project",
