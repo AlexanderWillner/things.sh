@@ -9,9 +9,9 @@ myPluginMethod="exportCSV"
 eval "$myPlugin=('$myPluginCommand' '$myPluginDescription' '$myPluginMethod')"
 
 exportCSV() {
-  echo '"Title"'"${SEP:-;}"'"Type"'"${SEP:-;}"'"URI"'"${SEP:-;}"'"Creation Date"'"${SEP:-;}"'"Modification Date"'"${SEP:-;}"'"Due Date"'"${SEP:-;}"'"Start Date"'"${SEP:-;}"'"Completion Date"'"${SEP:-;}"'"Recurring"'"${SEP:-;}"'"Heading"'"${SEP:-;}"'"Project"'"${SEP:-;}"'"Area"'"${SEP:-;}"'"Subtask"'"${SEP:-;}"'"Notes"'"${SEP:-;}"'"Tags"'
-  sqlite3 -csv -separator "${SEP:-;}" "$THINGSDB" "$(getCSVQueryTasks)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t "${ENCODING:-WINDOWS-1252//TRANSLIT}" || true
-  sqlite3 -csv -separator "${SEP:-;}" "$THINGSDB" "$(getCSVQueryChecklists)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t "${ENCODING:-WINDOWS-1252//TRANSLIT}" || true
+  echo '"Title"'"${SEP:-,}"'"Type"'"${SEP:-,}"'"URI"'"${SEP:-,}"'"Creation Date"'"${SEP:-,}"'"Modification Date"'"${SEP:-,}"'"Due Date"'"${SEP:-,}"'"Start Date"'"${SEP:-,}"'"Completion Date"'"${SEP:-,}"'"Recurring"'"${SEP:-,}"'"Heading"'"${SEP:-,}"'"Project"'"${SEP:-,}"'"Area"'"${SEP:-,}"'"Subtask"'"${SEP:-,}"'"Notes"'"${SEP:-,}"'"Tags"'
+  sqlite3 -csv -separator "${SEP:-,}" "$THINGSDB" "$(getCSVQueryTasks)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t "${ENCODING:-UTF-8}" || true
+  sqlite3 -csv -separator "${SEP:-,}" "$THINGSDB" "$(getCSVQueryChecklists)" | awk '{gsub("<[^>]*>", "")}1' | iconv -c -f UTF-8 -t "${ENCODING:-UTF-8}" || true
 }
 
 getCSVQueryTasks() {

@@ -94,7 +94,9 @@ COMMANDS:
 
 ```things.sh csv > Things3Export.csv && open Things3Export.csv```
 
-Note that this command generates a file that is readable by Microsoft Excel in Europe, i.e., the default encoding is ```WINDOWS-1252``` and the separator is ```;```. If you want to import the file in another region, you can specify the according encoding using ```ENCODING="WINDOWS-1251//TRANSLIT" ./things.sh csv > Things3Export.csv```. Or to follow the standard use ```SEP="," ENCODING="UTF-8" ./things.sh csv > Things3Export.csv```.
+Note that this command generates a standards compliant file. If you have problems
+opening it using Microsoft Excel, you might want to change some parameters.
+E.g., ```SEP=";" ENCODING="WINDOWS-1252//TRANSLIT" ./things.sh csv > Things3Export.csv```.
 
 ### Statistics
 
