@@ -177,3 +177,9 @@ It has [some benefits](https://blog.amazingmarvin.com/5-benefits-of-using-time-e
 - Shell tips    : [https://google.github.io/styleguide/shell.xml](https://google.github.io/styleguide/shell.xml)
 - Shell tips    : [https://kvz.io/blog/2013/11/21/bash-best-practices/](https://kvz.io/blog/2013/11/21/bash-best-practices/)
 - Shell tips    : [https://github.com/progrium/bashstyle](https://github.com/progrium/bashstyle)
+
+## EZ Releases
+
+* Rebase on upstream/master
+* Run `./dist` to make new Things3Export.zip
+* Add Release on github, tag x.y-ez

@@ -38,7 +38,13 @@ realpath() {
 }
 readonly PROGNAME="$(basename "$0")"
 readonly PATHNAME="$(dirname "$(realpath "$0")")"
-readonly DEFAULT_DB="$HOME/Library/Group Containers/JLMPQHK86H.com.culturedcode.ThingsMac/Things Database.thingsdatabase/main.sqlite"
+
+readonly DEFAULT_DB=$(find ~/Library/Group\ Containers/JLMPQHK86H.com.culturedcode.ThingsMac -name 'main.sqlite' | head -1)
+if [[ -z "$DEFAULT_DB" ]]; then
+  echo "Your database wasn't found!"
+  exit 1
+fi
+
 readonly THINGSDB="${THINGSDB:-$DEFAULT_DB}"
 readonly PLUGINDIR="$PATHNAME/plugins"
 ###############################################################################
