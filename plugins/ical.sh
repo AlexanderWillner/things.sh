@@ -30,17 +30,17 @@ queryIcal() {
 getIcalQuery() {
   read -rd '' query <<-SQL || true
 SELECT
-  date(TASK.dueDate,"unixepoch"),
+  date(TASK.deadline,"unixepoch"),
   "" || TASK.title,
   "things:///show?id=" || TASK.uuid,
   "" || REPLACE(REPLACE(TASK.notes, CHAR(13), ', '), CHAR(10), ', ')
 FROM $TASKTABLE as TASK
 LEFT OUTER JOIN $TASKTABLE PROJECT ON TASK.project = PROJECT.uuid
 LEFT OUTER JOIN $AREATABLE AREA ON TASK.area = AREA.uuid
-LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.actionGroup = HEADING.uuid
+LEFT OUTER JOIN $TASKTABLE HEADING ON TASK.heading = HEADING.uuid
 WHERE TASK.$ISNOTTRASHED AND TASK.$ISOPEN
-AND TASK.dueDate NOT NULL
-ORDER BY TASK.dueDate
+AND TASK.deadline NOT NULL
+ORDER BY TASK.deadline
 LIMIT $LIMIT_BY
 SQL
   echo "$query"
