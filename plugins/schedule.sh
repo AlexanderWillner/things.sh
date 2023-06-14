@@ -30,7 +30,7 @@ scheduleEvent() {
     local startDate=""
     local title=""
 
-    title="$(python -c 'import urllib, sys; print urllib.quote(sys.argv[1])' "${array[3]}")"
+    title="$(python3 -c 'import urllib.parse, sys; print (urllib.parse.quote(sys.argv[1]))' "${array[3]}")"
 
     if [[ "$position" == "E" ]]; then
       startDate="$(date -j -f '%Y-%m-%d' -v"$addition" -v"+${eventDays}d" "$eventStart" +%Y-%m-%d)"
