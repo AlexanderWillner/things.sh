@@ -24,7 +24,7 @@ You can use [brew](https://brew.sh) to install and later update the script:
     fi
 ```
 
-- Zsh autocompletion: copy the file ```things.zshcompletion.sh``` to a location you like, and add ```source /path/to/things.zshcompletion.sh``` to your ```.zshrc```
+- Zsh autocompletion: copy the file ```things.zshcompletion.sh``` to a location you like, and add ```source /path/to/things.zshcompletion.sh``` to your ```~/.zshrc```
 
 To uninstall just write `brew uninstall things.sh`.
 
