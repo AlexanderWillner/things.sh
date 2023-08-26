@@ -16,13 +16,15 @@ You can use [brew](https://brew.sh) to install and later update the script:
 - Prepare: ```brew tap AlexanderWillner/tap```
 - Install: ```brew install things.sh```
 - Upgrade: ```brew upgrade```
-- Autocompletion: ```brew install bash-completion```. Then add to ```~/.bashrc```:
+- Bash autocompletion: ```brew install bash-completion```. Then add to ```~/.bashrc```:
 
 ```bash
     if [ -f $(brew --prefix)/etc/bash_completion ]; then
       . $(brew --prefix)/etc/bash_completion
     fi
 ```
+
+- Zsh autocompletion: copy the file ```things.zshcompletion.sh``` to a location you like, and add ```source /path/to/things.zshcompletion.sh``` to your ```.zshrc```
 
 To uninstall just write `brew uninstall things.sh`.
 
